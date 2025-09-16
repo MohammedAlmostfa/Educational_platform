@@ -3,332 +3,218 @@
 namespace App\Services\Auth;
 
 use Exception;
-use Carbon\Carbon;
 use App\Models\User;
 use App\Events\Registered;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
     /**
+     * Generate a unified response structure.
+     *
+     * @param string|null $message Response message
+     * @param int $status HTTP status code
+     * @param array $data Additional data
+     * @return array
+     */
+    private function respond($message = null, $status = 200, $data = [])
+    {
+        return [
+            'status' => $status,
+            'message' => $message ? [$message] : [],
+            'data' => $data,
+        ];
+    }
+
+    /**
      * Register a new user.
      *
-     * This method handles user registration. It stores user data temporarily in the cache
-     * and sends a verification code to the user's email.
+     * Stores the user data temporarily in cache and sends a verification code to the email.
      *
-     * @param array $data User data: email, password, etc.
-     * @return array Contains message, status, and additional data.
+     * @param array $data User data: email, password
+     * @return array Response with status, message, and email
      */
     public function register($data)
     {
         try {
-            // Generate a unique cache key for the user data
             $userDataKey = 'user_data_' . $data['email'];
 
-            // Check if the user data is already cached
+            // Prevent duplicate registration attempts
             if (Cache::has($userDataKey)) {
-                return [
-                    'status' => 400,
-                    'message' => [
-                        'errorDetails' => [__('auth.registration_error')],
-                    ],
-                ];
+                return $this->respond('هذا البريد مستخدم مسبقاً.', 400);
             }
 
             // Store user data in cache for 1 hour
             Cache::put($userDataKey, $data, 3600);
 
-            // Generate a unique cache key for the verification code
             $verifkey = 'verification_code_' . $data['email'];
 
-            // Check if the verification code already exists in the cache
             if (Cache::has($verifkey)) {
-                return [
-                    'status' => 400,
-                    'message' => [
-                        'errorDetails' => [__('auth.verification_code_error')],
-                    ],
-                ];
+                return $this->respond('تم إرسال كود التحقق مسبقاً.', 400);
             }
 
-            // Generate a random 6-digit code and store it in the cache
+            // Generate a 4-digit verification code
             $code = Cache::remember($verifkey, 3600, function () {
                 return random_int(1000, 9999);
             });
 
-            // Trigger the Registered event to send the verification email
+            // Trigger the Registered event to send verification email
             event(new Registered($data, $verifkey));
 
-            // Return success response
-            return [
-                'message' => __('auth.verification_success'),
-                'status' => 201, // HTTP status code for created
-                'data' => [
-                    'email' => $data['email'],
-                ],
-            ];
+            return $this->respond('تم إرسال كود التحقق بنجاح.', 201, ['email' => $data['email']]);
         } catch (Exception $e) {
-            // Log the error if registration fails
             Log::error('Error in registration: ' . $e->getMessage());
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
-            ];
+            return $this->respond('حدث خطأ أثناء التسجيل، حاول لاحقاً.', 500);
         }
     }
 
     /**
-     * Verify user account using the verification code.
+     * Verify a user's account using the verification code.
      *
-     * This method verifies the user's account using the verification code sent to their email.
-     * If the code is correct, it creates the user in the database and returns a JWT token.
+     * Checks if the code matches the cached code, creates the user in DB, and generates a JWT token.
      *
-     * @param array $data Contains email and verification code.
-     * @return array Contains message, status, and additional data.
+     * @param array $data Contains email and verification code
+     * @return array Response with status, message, and token if successful
      */
     public function verficationacount($data)
     {
         try {
-
             $userDataKey = 'user_data_' . $data['email'];
             $userData = Cache::get($userDataKey);
 
             if (!$userData) {
-                return [
-                    'status' => 404,
-                    'message' => [
-                        'errorDetails' => [__('auth.not_registered_yet')],
-                    ],
-                ];
+                return $this->respond('لم تقم بالتسجيل بعد.', 404);
             }
-            // Generate the cache key for the verification code
-            $verifkey = 'verification_code_' . $data['email'];
 
-            // Retrieve the cached verification code
+            $verifkey = 'verification_code_' . $data['email'];
             $cachedCode = Cache::get($verifkey);
 
-            // Check if the provided code matches the cached code
-            if ($cachedCode == $data['code']) {
-                // Retrieve the user data from cache
+            // Compare verification code (strict type)
+            if ($cachedCode === $data['code']) {
 
-                // Create the user in the database
+                // Prevent duplicate users
+                if(User::where('email', $userData['email'])->exists()) {
+                    return $this->respond('هذا البريد مستخدم مسبقاً.', 400);
+                }
+
+                // Create user and mark email as verified
                 $user = User::create([
                     'email' => $userData['email'],
-                    'password' => bcrypt($userData['password']), // Hash the password
-                    'email_verified_at' => now(), // Mark the email as verified
+                    'password' => bcrypt($userData['password']),
+                    'email_verified_at' => now(),
                 ]);
 
-                // Generate a JWT token for the user
+                // Generate JWT token
                 $token = JWTAuth::fromUser($user);
 
-                // Clear the verification code and user data from the cache
+                // Clear cache
                 Cache::forget($verifkey);
                 Cache::forget($userDataKey);
 
-                // // Fetch all cities
-                // $cities = Cache::rememberForever('cities_list', function () {
-                //     return City::select('id', 'city_name')->get();
-                // });
-                return [
-                    'message' => __('auth.email_verified_and_registered'),
-                    'status' => 200,
-                    'data' => [
-                        'token' => $token, // Return the generated token
-                     //   'cities' => $cities, // Return cities for new users
-                    ],
-                ];
+                return $this->respond('تم تأكيد البريد وإنشاء الحساب بنجاح.', 200, ['token' => $token]);
             } else {
-                return [
-                    'status' => 400,
-                    'message' => [
-                        'errorDetails' => [__('auth.invalid_verification_code')],
-                    ],
-                ];
+                return $this->respond('كود التحقق غير صحيح.', 400);
             }
         } catch (Exception $e) {
-            // Log the error
             Log::error('Error in verficationacount: ' . $e->getMessage());
-
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
-            ];
+            return $this->respond('حدث خطأ أثناء التحقق، حاول لاحقاً.', 500);
         }
     }
 
     /**
-     * Resend the verification code.
+     * Resend verification code to user's email.
      *
-     * This method resends the verification code to the user's email if the previous code has expired or the user requests a new one.
+     * Generates a new code and triggers the Registered event.
      *
-     * @param array $data Contains the user's email.
-     * @return array Contains message, status, and additional data.
+     * @param array $data Contains user's email
+     * @return array Response with status and message
      */
     public function resendCode($data)
     {
         try {
-            // Generate the cache key for the verification code
             $verifkey = 'verification_code_' . $data['email'];
 
-            // Check if a verification code already exists in the cache
+            // Remove previous code if exists
             if (Cache::has($verifkey)) {
-
-
                 Cache::forget($verifkey);
-
-
-
-                // Generate a new 6-digit random code and store it in the cache for 1 hour
-                $code = Cache::remember($verifkey, 3600, function () {
-                    return random_int(1000, 9999);
-                });
-
-                // Trigger the Registered event to send the new verification email
-                event(new Registered($data, $verifkey));
-
-                // Return success response
-                return [
-                    'message' => __('auth.verification_success'),
-                    'status' => 200,
-                ];
-            } else {
-                // If no code exists in the cache, return an error
-                return [
-                    'status' => 400,
-                    'message' => [
-                        'errorDetails' => [__('auth.not_registered_yet')],
-                    ],
-                ];
             }
+
+            // Generate new verification code
+            $code = Cache::remember($verifkey, 3600, function () {
+                return random_int(1000, 9999);
+            });
+
+            event(new Registered($data, $verifkey));
+
+            return $this->respond('تم إعادة إرسال كود التحقق بنجاح.', 200);
         } catch (Exception $e) {
-            // Log the error if resending the code fails
             Log::error('Error in resendCode: ' . $e->getMessage());
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
-            ];
+            return $this->respond('حدث خطأ أثناء إعادة إرسال الكود، حاول لاحقاً.', 500);
         }
     }
 
-
     /**
-     * Login a user.
+     * Authenticate user and generate JWT token.
      *
-     * This method authenticates a user using their email and password.
-     * If successful, it returns a JWT token for further authenticated requests.
-     *
-     * @param array $credentials User credentials: email, password.
-     * @return array Contains message, status, data, and authorization details.
+     * @param array $credentials Email and password
+     * @return array Response with status, message, and token
      */
     public function login($credentials)
     {
         try {
-            // Attempt to authenticate the user using JWT
-            if (!$token = JWTAuth::attempt($credentials)) {
-                // If authentication fails
-                return [
-                    'status' => 401,
-                    'message' => [
-                        'errorDetails' => [__('auth.login_failed')],
-                    ],
-                ];
-            } else {
-                // If authentication succeeds
-                $user = Auth::user();
-                return [
-                    'message' => __('auth.login_success'),
-                    'status' => 201, // HTTP status code for successful creation
-                    'data' => [
-                        'token' => $token, // Return the generated token
-                        'type' => 'bearer', // Token type
-                    ],
-                ];
+            if (!$token = auth('api')->attempt($credentials)) {
+                return $this->respond('بيانات الدخول غير صحيحة.', 401);
             }
+
+            $user = auth('api')->user();
+            return $this->respond('تم تسجيل الدخول بنجاح.', 201, [
+                'token' => $token,
+                'type' => 'bearer',
+                'user' => $user,
+            ]);
         } catch (Exception $e) {
-            // Log the error if login fails
             Log::error('Error in login: ' . $e->getMessage());
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
-            ];
+            return $this->respond('حدث خطأ أثناء تسجيل الدخول، حاول لاحقاً.', 500);
         }
     }
 
     /**
-     * Logout the authenticated user.
+     * Logout authenticated user and invalidate JWT token.
      *
-     * This method logs out the currently authenticated user.
-     *
-     * @return array Contains message and status.
+     * @return array Response with status and message
      */
     public function logout()
     {
         try {
-            // Logout the user
-            Auth::logout();
-            return [
-                'message' => __('auth.logout_success'),
-                'status' => 200, // HTTP status code for success
-            ];
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return $this->respond('تم تسجيل الخروج بنجاح.', 200);
         } catch (Exception $e) {
-            // Log the error if logout fails
             Log::error('Error in logout: ' . $e->getMessage());
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
-            ];
+            return $this->respond('حدث خطأ أثناء تسجيل الخروج، حاول لاحقاً.', 500);
         }
     }
 
     /**
-     * Refresh the JWT token for the authenticated user.
+     * Refresh JWT token for authenticated user.
      *
-     * This method refreshes the JWT token for the authenticated user.
-     *
-     * @return array Contains message, status, user, and authorization details.
+     * @return array Response with new token and user info
      */
     public function refresh()
     {
         try {
             $newToken = JWTAuth::parseToken()->refresh();
+            $user = auth('api')->user();
 
-            // Correct way to refresh the token
-
-            // Refresh the token for the authenticated user
-            return [
-                'message' => __('auth.token_refresh_success'),
-                'status' => 200, // HTTP status code for success
-                'data' => [
-                    'user' => auth()->user(), // Return the authenticated user
-                    'token' => $newToken, // Return the new refreshed token
-                ],
-            ];
+            return $this->respond('تم تجديد التوكن بنجاح.', 200, [
+                'token' => $newToken,
+                'user' => $user,
+            ]);
         } catch (Exception $e) {
-            // Log the error if token refresh fails
-            Log::error(': ' . $e->getMessage());
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
-            ];
+            Log::error('Error in refresh: ' . $e->getMessage());
+            return $this->respond('حدث خطأ أثناء تجديد التوكن، حاول لاحقاً.', 500);
         }
     }
-
-
 }

@@ -51,7 +51,6 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
- protected $appends = ['average_rating'];
 
     /**
      * The attributes that should be cast to specific data types.
@@ -93,8 +92,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Profile::class, 'user_id');
     }
 
-
-
     /**
      * Polymorphic one-to-many relationship for user photos.
      *
@@ -105,28 +102,6 @@ class User extends Authenticatable implements JWTSubject
     public function photo()
     {
         return $this->morphMany(Photo::class, 'photoable');
-    }
-
-
-    /**
-     * Calculate and return the average rating for the user.
-     *
-     * @return float
-     */
-
-    public function getAverageRatingAttribute()
-    {
-        return round($this->ratings()->avg('rate') ?? 0, 2);
-    }
-
-    /**
-     * Count the total number of ratings received.
-     *
-     * @return int
-     */
-    public function countRatings()
-    {
-        return $this->ratings()->count();
     }
 
     /**
