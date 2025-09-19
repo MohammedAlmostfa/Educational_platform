@@ -17,8 +17,7 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
+$table->foreignId('country_id')->nullable()->constrained('countries')->nullOnDelete();
             $table->timestamps();
             $table->index('user_id');
         });

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+
+use App\Traits\HasCustomMedia;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +22,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasCustomMedia;
 
     /**
      * Guard name for JWT Authentication (typically 'api').
@@ -99,10 +101,11 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function photo()
-    {
-        return $this->morphMany(Photo::class, 'photoable');
-    }
+ public function media()
+{
+    return $this->morphMany(Media::class, 'model');
+}
+
 
     /**
      * Count the total number of items owned by the user.

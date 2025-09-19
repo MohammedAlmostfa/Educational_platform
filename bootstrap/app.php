@@ -1,6 +1,5 @@
 <?php
 
-use Throwable;
 use Psr\Log\LogLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Lottery;
@@ -45,16 +44,16 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // 2. إضافة سياق عام لجميع logs الأخطاء
-        $exceptions->context(function () {
-            return [
-                'environment' => app()->environment(),
-                'timestamp' => now()->toISOString(),
-                'url' => request()?->fullUrl() ?? 'unknown',
-                'ip' => request()?->ip() ?? 'unknown',
-                'user_agent' => request()?->userAgent() ?? 'unknown',
-                'user_id' => auth()->id() ?? 'guest',
-            ];
-        });
+        // $exceptions->context(function () {
+        //     return [
+        //         'environment' => app()->environment(),
+        //         'timestamp' => now()->toISOString(),
+        //         'url' => request()?->fullUrl() ?? 'unknown',
+        //         'ip' => request()?->ip() ?? 'unknown',
+        //         'user_agent' => request()?->userAgent() ?? 'unknown',
+        //         'user_id' => auth()->id() ?? 'guest',
+        //     ];
+        // });
 
         // 3. منع تكرار الإبلاغ عن نفس الاستثناء
         $exceptions->dontReportDuplicates();

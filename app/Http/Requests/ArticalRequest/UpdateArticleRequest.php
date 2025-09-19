@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests\ArticalRequest;
+use App\Rules\CheckFile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateArticleRequest extends FormRequest
@@ -25,6 +26,12 @@ class UpdateArticleRequest extends FormRequest
             'content' => 'sometimes|required|string',
             'author' => 'sometimes|required|string|max:100',
             'published_at' => 'nullable|date',
+            'photo' => [
+                'nullable',
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp',
+                'max:5120',
+                new CheckFile
+        ],
         ];
     }
 

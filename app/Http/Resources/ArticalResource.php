@@ -15,14 +15,18 @@ class ArticalResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $firstMedia = $this->media->first();
         return [
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'author' => $this->author,
             'published_at' => $this->published_at
-                ? \Carbon\Carbon::parse($this->published_at)->format('Y-m-d H:i:s')
+                ? \Carbon\Carbon::parse($this->published_at)->format('Y-m-d ')
                 : null,
+            'photo'       => $firstMedia ? asset('storage/' . $firstMedia->path) : null,
+
+
         ];
     }
 }

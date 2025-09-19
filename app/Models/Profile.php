@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\User;
 use App\Models\Country;
-use App\Models\Province;
+
 
 class Profile extends Model
 {

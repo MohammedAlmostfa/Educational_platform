@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\ProfileRequest;
 
+use App\Rules\CheckFile;
 use App\Rules\CheckPhoto;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateProfileRequest extends FormRequest
@@ -31,7 +32,7 @@ class UpdateProfileRequest extends FormRequest
             'address' => 'nullable|regex:/(^[-0-9A-Za-z.,\/ ]+$)/',
             'longitude' => 'nullable|',
             'latitude' => 'nullable|',
-            'photo' => ['nullable', 'image', new CheckPhoto]
+            'photo' => ['nullable', 'image', new CheckFile]
         ];
     }
 

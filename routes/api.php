@@ -4,8 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\BookController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -32,6 +35,13 @@ Route::post('/resendCode', [AuthController::class, 'resendCode']); // Resends th
 Route::post('/changePassword', [ForgetPasswordController::class, 'changePassword']); // Handles password change
 Route::post('/checkEmail', [ForgetPasswordController::class, 'checkEmail']); // Checks if the email exists for password reset
 Route::post('/checkCode', [ForgetPasswordController::class, 'checkCode']); // Verifies a password reset code
-Route::get('countries', [CountryController::class, "index"]);
 
+
+Route::middleware('auth:api')->group(function () {
+Route::apiResource('/profiles',ProfileController::class);
+Route::get('me', [ProfileController::class, 'getme']); // Retrieves the authenticated user's profile
+});
+
+Route::get('countries', [CountryController::class, "index"]);
+Route::apiResource('books',BookController::class);
 Route::apiResource('articles', ArticleController::class);

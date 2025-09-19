@@ -2,152 +2,149 @@
 
 namespace App\Services\Auth;
 
-use Exception;
 use App\Models\Profile;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * Class ProfileService
+ *
+ * Service layer responsible for handling profile creation, updating, and retrieval
+ * for the authenticated user.
+ */
 class ProfileService
 {
+    /**
+     * Create a new profile for the authenticated user.
+     *
+     * - Updates user's name.
+     * - Creates a new profile record.
+     * - Optionally uploads and attaches a profile photo.
+     *
+     * @param array $data Input data for profile creation
+     * @return array Response with status and message (in Arabic)
+     */
     public function createProfile(array $data): array
     {
-        try {
-            $user = Auth::user();
+        $user = Auth::user();
 
-            if (!$user->profile) {
+        // Only create a profile if the user does not already have one
+        if (!$user->profile) {
+            DB::transaction(function () use ($user, $data) {
+                // Update user's name
                 $user->name = $data['name'];
                 $user->save();
 
+                // Create a new profile linked to the user
                 Profile::create([
-
-                    'birthday' => $data['birthday'] ?? null,
-                    'phone' => $data['phone'],
-                    'address' => $data['address'],
-                    'user_id' => $user->id,
-                    'longitude' => $data['longitude'] ?? null,
-                    'latitude' => $data['latitude'] ?? null,
-
+                    'birthday'   => $data['birthday'] ?? null,
+                    'phone'      => $data['phone'],
+                    'address'    => $data['address'],
+                    'user_id'    => $user->id,
+                    'country_id' => $data['country_id'] ?? null,
                 ]);
-                if (isset($data['photo']) && $data['photo']) {
-                    $image = $data['photo'];
-                    $imageName = Str::random(32) . '.' . $image->getClientOriginalExtension();
-                    $path = $image->storeAs('users/photos', $imageName, 'public');
-                    $user->photo()->create(['url' => $path]);
+
+                // Upload and attach profile photo if provided
+                if (!empty($data['photo'])) {
+                    $user->storeMediaFile($data['photo'], 'users/photos', true);
                 }
-
-
-                return [
-                    'message' => __('profile.profile_created_successfully'),
-                    'status' => 200,
-                ];
-            }
+            });
 
             return [
-                'status' => 400,
-                'message' => [
-                    'errorDetails' => [__('profile.user_already_has_profile')],
-                ],
-            ];
-        } catch (Exception $e) {
-            Log::error('Error occurred while creating profile: ' . $e->getMessage());
-
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
+                'message' => 'تم إنشاء الملف الشخصي بنجاح.',
+                'status'  => 200,
             ];
         }
+
+        return [
+            'message' => 'للمستخدم ملف شخصي موجود مسبقاً.',
+            'status'  => 400,
+        ];
     }
 
+    /**
+     * Update the profile of the authenticated user.
+     *
+     * - Updates user name if provided.
+     * - Updates profile fields such as birthday, phone, address, etc.
+     * - Replaces profile photo if provided.
+     *
+     * @param array $data Input data for profile update
+     * @return array Response with status and message (in Arabic)
+     */
     public function updateProfile(array $data): array
     {
-        try {
-            $user = Auth::user();
-            $profile = $user->profile;
+        $user = Auth::user();
+        $profile = $user->profile;
 
-            if (!empty($data['name'])) {
-                $user->name = $data['name'];
-                $user->save();
-            }
+        // Update user's name if provided
+        if (!empty($data['name'])) {
+            $user->name = $data['name'];
+            $user->save();
+        }
 
-            if ($profile) {
+        // Update profile if it exists
+        if ($profile) {
+            DB::transaction(function () use ($profile, $user, $data) {
+                // Update profile fields
                 $profile->update([
-                    'birthday' => $data['birthday'] ?? $profile->birthday,
-                    'phone' => $data['phone'] ?? $profile->phone,
-                    'address' => $data['address'] ?? $profile->address,
-                    'longitude' => $data['longitude'] ?? $profile->longitude,
-                    'latitude' => $data['latitude'] ?? $profile->latitude,
+                    'birthday'   => $data['birthday'] ?? $profile->birthday,
+                    'phone'      => $data['phone'] ?? $profile->phone,
+                    'address'    => $data['address'] ?? $profile->address,
+                    'longitude'  => $data['longitude'] ?? $profile->longitude,
+                    'latitude'   => $data['latitude'] ?? $profile->latitude,
+                    'country_id' => $data['country_id'] ?? $profile->country_id,
                 ]);
 
-                if (isset($data['photo']) && $data['photo']) {
-                    $user->photo()->delete(); // Corrected
-                    $image = $data['photo'];
-                    $imageName = Str::random(32) . '.' . $image->getClientOriginalExtension();
-                    $path = $image->storeAs('users/photos', $imageName, 'public');
-                    $user->photo()->create(['url' => $path]);
+                // Update profile photo if provided
+                if (!empty($data['photo'])) {
+                    $user->storeMediaFile($data['photo'], 'users/photos', true);
                 }
-
-
-
-                return [
-                    'message' => __('profile.profile_updated_successfully'),
-                    'status' => 200,
-                ];
-            }
+            });
 
             return [
-                'status' => 404,
-                'message' => [
-                    'errorDetails' => [__('profile.user_does_not_have_profile')],
-                ],
-            ];
-        } catch (Exception $e) {
-            Log::error('Error occurred while updating profile: ' . $e->getMessage());
-
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
+                'message' => 'تم تحديث الملف الشخصي بنجاح.',
+                'status'  => 200,
             ];
         }
+
+        return [
+            'message' => 'المستخدم لا يمتلك ملف شخصي لتحديثه.',
+            'status'  => 404,
+        ];
     }
 
+    /**
+     * Get the profile details of the authenticated user.
+     *
+     * - Loads profile and media relationships.
+     * - Returns essential user information (id, name, email, etc.).
+     * - Includes full URL for profile photo if available.
+     *
+     * @return array Response with user data (messages in Arabic)
+     */
     public function getMe(): array
     {
-        try {
-            $user = Auth::user();
-            $user->load('profile');
+        $user = Auth::user();
+        $user->load('profile', 'media');
 
-            $userData = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'gender' => $user->profile->gender,
-                'birthday' => $user->profile->birthday,
-                'phone' => $user->profile->phone,
-                'address' => $user->profile->address,
-                'longitude' => $user->profile->longitude,
-                'latitude' => $user->profile->latitude,
+        $userData = [
+            'id'       => $user->id,
+            'name'     => $user->name,
+            'email'    => $user->email,
+            'birthday' => $user->profile?->birthday?->format('Y-m-d'),
+            'phone'    => $user->profile?->phone,
+            'address'  => $user->profile?->address,
+            'country'  => $user->profile?->country?->name,
+            'photo'    => $user->media()->first()
+                ? asset('storage/' . $user->media()->first()->path)
+                : null,
+        ];
 
-            ];
-
-            return [
-                'message' => __('profile.user_data_retrieved_successfully'),
-                'status' => 200,
-                'data' => $userData,
-            ];
-        } catch (Exception $e) {
-            Log::error('Error occurred while retrieving user data: ' . $e->getMessage());
-
-            return [
-                'status' => 500,
-                'message' => [
-                    'errorDetails' => __('general.failed'),
-                ],
-            ];
-        }
+        return [
+            'message' => 'تم استرجاع بيانات المستخدم بنجاح.',
+            'status'  => 200,
+            'data'    => $userData,
+        ];
     }
 }

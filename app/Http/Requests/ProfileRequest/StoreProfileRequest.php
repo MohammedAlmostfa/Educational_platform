@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\ProfileRequest;
 
+use App\Rules\CheckFile;
 use App\Rules\CheckPhoto;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreProfileRequest extends FormRequest
@@ -32,7 +33,12 @@ class StoreProfileRequest extends FormRequest
             'address' => 'required',
             'longitude' => 'nullable|',
             'latitude' => 'nullable|',
-            'photo' => ['nullable', 'image', new CheckPhoto],
+            'photo' => [
+                'nullable',
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp',
+                'max:5120',
+                new CheckFile
+            ],
         ];
     }
 
