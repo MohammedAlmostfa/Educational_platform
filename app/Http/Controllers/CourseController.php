@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\courseRequest\StoreCourseRequest;
-use App\Http\Requests\courseRequest\UpdateCourseRequest;
-use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Services\CourseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\CourseResource;
+use App\Http\Requests\courseRequest\StoreCourseRequest;
+use App\Http\Requests\courseRequest\CourseFilterRequest;
+use App\Http\Requests\courseRequest\UpdateCourseRequest;
 
 class CourseController extends Controller
 {
@@ -31,12 +33,13 @@ class CourseController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(CourseFilterRequest $request): JsonResponse
     {
-        $result = $this->courseService->getAllCourses();
+        $validatedData = $request->validated();
+        $result = $this->courseService->getAllCourses($validatedData);
 
         return $result['status'] === 200
-            ? self::paginated($result['data'],CourseResource::class, $result['message'], $result['status'])
+            ? self::paginated($result['data'], CourseResource::class, $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
 
@@ -89,6 +92,4 @@ class CourseController extends Controller
             ? self::success(null, $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
-
-
 }

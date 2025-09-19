@@ -19,4 +19,16 @@ protected $fillable = [
     {
         return $this->morphMany(Media::class, 'model');
     }
+    public function scopeFilter($query, $filters)
+    {
+        if (isset($filters['title'])) {
+            $query->where('title', 'like', '%' . $filters['title'] . '%');
+        }
+
+        if (isset($filters['instructor'])) {
+            $query->where('instructor', 'like', '%' . $filters['instructor'] . '%');
+        }
+
+        return $query;
+    }
 }

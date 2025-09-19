@@ -15,10 +15,13 @@ class CourseService
      *
      * @return array
      */
-    public function getAllCourses()
+    public function getAllCourses($filters)
     {
         // Fetch courses with their related media
-        $courses = Course::with('media')->paginate(10);
+        $courses = Course::with('media')      ->when(!empty($filters), function ($query) use ($filters) {
+            $query->filter($filters); // Use scopeFilter
+        })
+        ->paginate(10);
 
         return [
             'status' => 200,

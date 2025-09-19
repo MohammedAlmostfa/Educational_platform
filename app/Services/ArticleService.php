@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use Illuminate\Support\Facades\Log;
 
 /**
  * ArticleService
@@ -17,14 +18,23 @@ class ArticleService
      *
      * @return array Unified response with status, message, and data
      */
-    public function getAllArticles()
-    {
-        return [
-            'status'  => 200, // Response status code
-            'message' => 'تم استرجاع جميع المقالات بنجاح', // Success message
-            'data'    => Article::with('media')->paginate(10), // Paginated list of articles
-        ];
-    }
+    public function getAllArticles($filters)
+{
+    Log::info("filters", $filters);
+    // Apply filters only if $filters is not empty, then paginate
+    $articles = Article::with('media')
+        ->when(!empty($filters), function ($query) use ($filters) {
+            $query->filter($filters); // Use scopeFilter
+        })
+        ->paginate(10); // Paginated list of articles
+
+    return [
+        'status'  => 200,
+        'message' => 'تم استرجاع جميع المقالات بنجاح',
+        'data'    => $articles
+    ];
+}
+
 
     /**
      * Create a new article and optionally upload a photo.

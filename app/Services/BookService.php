@@ -18,10 +18,13 @@ class BookService
      *
      * @return array Unified response with status, message, and data
      */
-    public function getAllBooks()
+    public function getAllBooks($filters)
     {
         // Fetch books with related media (10 items per page)
-        $books = Book::with('media')->paginate(10);
+        $books = Book::with('media')->when(!empty($filters), function ($query) use ($filters) {
+            $query->filter($filters); // Use scopeFilter
+        })
+            ->paginate(10);
 
         return [
             'status'  => 200,

@@ -3,11 +3,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
-use App\Services\ArticleService;
+use App\Http\Requests\ArticalRequest\ArticleFilterRequest;
 use App\Http\Requests\ArticalRequest\StoreArticleRequest;
 use App\Http\Requests\ArticalRequest\UpdateArticleRequest;
 use App\Http\Resources\ArticalResource;
+use App\Models\Article;
+use App\Services\ArticleService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * ArticleController
@@ -34,13 +37,16 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $result = $this->articleService->getAllArticles();
-        return $result['status'] === 200
-            ? self::paginated($result['data'],ArticalResource::class, $result['message'], $result['status'])
-            : self::error(null, $result['message'], $result['status']);
-    }
+ public function index(ArticleFilterRequest $request)
+{
+
+$validatedData=$request->validated();
+    $result = $this->articleService->getAllArticles($validatedData);
+
+    return $result['status'] === 200
+        ? self::paginated($result['data'], ArticalResource::class, $result['message'], $result['status'])
+        : self::error(null, $result['message'], $result['status']);
+}
 
     /**
      * Store a newly created resource in storage.

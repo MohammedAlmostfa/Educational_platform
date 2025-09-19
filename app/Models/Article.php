@@ -18,5 +18,17 @@ class Article extends Model
     {
         return $this->morphMany(Media::class, 'model');
     }
+    public function scopeFilter($query, $filters)
+    {
+        if (isset($filters['title'])) {
+            $query->where('title', 'like', '%' . $filters['title'] . '%');
+        }
+
+        if (isset($filters['author'])) {
+            $query->where('author', 'like', '%' . $filters['author'] . '%');
+        }
+
+        return $query;
+    }
 
 }

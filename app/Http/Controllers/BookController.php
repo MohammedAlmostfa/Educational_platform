@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Services\BookService;
-use App\Http\Requests\BookRequest\StoreBookRequest;
-use App\Http\Requests\BookRequest\UpdateBookRequest;
 use App\Http\Resources\BookResource;
+use App\Http\Requests\BookRequest\StoreBookRequest;
+use App\Http\Requests\BookRequest\BookFilterRequest;
+use App\Http\Requests\BookRequest\UpdateBookRequest;
 
 class BookController extends Controller
 {
@@ -20,9 +21,10 @@ class BookController extends Controller
     /**
      * Display a listing of books.
      */
-    public function index()
+    public function index(BookFilterRequest $request)
     {
-        $result = $this->bookService->getAllBooks();
+        $validatedData=$request->validated();
+        $result = $this->bookService->getAllBooks($validatedData);
 
         return $result['status'] === 200
             ? self::paginated ($result['data'],BookResource::class, $result['message'], $result['status'])
