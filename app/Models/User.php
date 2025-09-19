@@ -105,6 +105,10 @@ class User extends Authenticatable implements JWTSubject
 {
     return $this->morphMany(Media::class, 'model');
 }
+public function ratings()
+{
+    return $this->hasMany(Rating::class);
+}
 
 
 

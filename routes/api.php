@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LibraryController;
@@ -40,6 +41,7 @@ Route::post('/checkCode', [ForgetPasswordController::class, 'checkCode']); // Ve
 
 Route::middleware('auth:api')->group(function () {
 Route::apiResource('/profiles',ProfileController::class);
+Route::apiResource('ratings', RatingController::class); // Manages course ratings
 Route::get('me', [ProfileController::class, 'getme']); // Retrieves the authenticated user's profile
 });
 

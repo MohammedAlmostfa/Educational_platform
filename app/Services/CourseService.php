@@ -17,11 +17,13 @@ class CourseService
      */
     public function getAllCourses($filters)
     {
-        // Fetch courses with their related media
-        $courses = Course::with('media')      ->when(!empty($filters), function ($query) use ($filters) {
-            $query->filter($filters); // Use scopeFilter
-        })
-        ->paginate(10);
+$courses = Course::with('media')
+    ->withAvg('ratings', 'rating') // هذا يعطيك avg_rating
+    ->when(!empty($filters), function ($query) use ($filters) {
+        $query->filter($filters);
+    })
+    ->paginate(10);
+
 
         return [
             'status' => 200,

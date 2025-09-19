@@ -6,8 +6,9 @@ use App\Traits\HasCustomMedia;
 use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
-{ use HasCustomMedia;
-protected $fillable = [
+{
+    use HasCustomMedia;
+    protected $fillable = [
         'title',
         'description',
         'instructor',
@@ -15,7 +16,11 @@ protected $fillable = [
         'price'
     ];
 
-      public function media()
+    protected $casts = [
+        'price' => 'float',
+        'duration' => 'integer',
+    ];
+    public function media()
     {
         return $this->morphMany(Media::class, 'model');
     }
@@ -30,5 +35,9 @@ protected $fillable = [
         }
 
         return $query;
+    }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
     }
 }
