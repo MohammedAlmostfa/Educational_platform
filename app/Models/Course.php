@@ -11,7 +11,8 @@ protected $fillable = [
         'title',
         'description',
         'instructor',
-        'duration'
+        'duration',
+        'price'
     ];
 
       public function media()

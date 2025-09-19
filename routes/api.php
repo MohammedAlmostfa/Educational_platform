@@ -2,13 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
-use App\Http\Controllers\BookController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -45,3 +46,4 @@ Route::get('me', [ProfileController::class, 'getme']); // Retrieves the authenti
 Route::get('countries', [CountryController::class, "index"]);
 Route::apiResource('books',BookController::class);
 Route::apiResource('articles', ArticleController::class);
+Route::apiResource('courses', CourseController::class);

@@ -2,64 +2,93 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\courseRequest\StoreCourseRequest;
+use App\Http\Requests\courseRequest\UpdateCourseRequest;
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
-use Illuminate\Http\Request;
+use App\Services\CourseService;
+use Illuminate\Http\JsonResponse;
 
 class CourseController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @var CourseService
      */
-    public function index()
+    protected $courseService;
+
+    /**
+     * CourseController constructor.
+     *
+     * @param CourseService $courseService
+     */
+    public function __construct(CourseService $courseService)
     {
-        //
+        $this->courseService = $courseService;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of courses with pagination.
+     *
+     * @return JsonResponse
      */
-    public function create()
+    public function index(): JsonResponse
     {
-        //
+        $result = $this->courseService->getAllCourses();
+
+        return $result['status'] === 200
+            ? self::paginated($result['data'],CourseResource::class, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created course in storage.
+     *
+     * @param StoreCourseRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreCourseRequest $request): JsonResponse
     {
-        //
+        $validated = $request->validated();
+
+        // Corrected the double $ issue
+        $result = $this->courseService->createCourse($validated);
+
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified course in storage.
+     *
+     * @param UpdateCourseRequest $request
+     * @param Course $course
+     * @return JsonResponse
      */
-    public function show(Course $course)
+    public function update(UpdateCourseRequest $request, Course $course): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $result = $this->courseService->updateCourse($course, $validated);
+
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove the specified course from storage.
+     *
+     * @param Course $course
+     * @return JsonResponse
      */
-    public function edit(Course $course)
+    public function destroy(Course $course): JsonResponse
     {
-        //
+        $result = $this->courseService->deleteCourse($course);
+
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Course $course)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Course $course)
-    {
-        //
-    }
 }

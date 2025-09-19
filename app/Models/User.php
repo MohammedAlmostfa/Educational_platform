@@ -107,25 +107,5 @@ class User extends Authenticatable implements JWTSubject
 }
 
 
-    /**
-     * Count the total number of items owned by the user.
-     *
-     * @return int
-     */
-    public function countItems()
-    {
-        return $this->items()->count();
-    }
 
-    /**
-     * Many-to-Many relationship: User has favorite users.
-     *
-     * This allows users to favorite each other using a pivot table "users_users".
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function favoriteUsers()
-    {
-        return $this->belongsToMany(User::class, 'users_users', 'user_id', 'favorite_user_id');
-    }
 }
