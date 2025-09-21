@@ -96,7 +96,7 @@ class BookService
         return DB::transaction(function () use ($book) {
             // Delete all related media
             $book->media()->delete();
-
+            $book->deleteMedia($book->media);
             // Delete the book itself
             $book->delete();
 

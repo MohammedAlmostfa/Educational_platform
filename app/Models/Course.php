@@ -40,4 +40,12 @@ class Course extends Model
     {
         return $this->hasMany(Rating::class);
     }
+
+    public function users()
+{
+    return $this->belongsToMany(User::class)
+                ->withPivot('status')
+                ->withTimestamps();
+}
+
 }

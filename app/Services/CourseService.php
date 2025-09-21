@@ -17,12 +17,12 @@ class CourseService
      */
     public function getAllCourses($filters)
     {
-$courses = Course::with('media')
-    ->withAvg('ratings', 'rating') // هذا يعطيك avg_rating
-    ->when(!empty($filters), function ($query) use ($filters) {
-        $query->filter($filters);
-    })
-    ->paginate(10);
+        $courses = Course::with('media')
+            ->withAvg('ratings', 'rating') // هذا يعطيك avg_rating
+            ->when(!empty($filters), function ($query) use ($filters) {
+                $query->filter($filters);
+            })
+            ->paginate(10);
 
 
         return [
@@ -96,11 +96,10 @@ $courses = Course::with('media')
     {
         return DB::transaction(function () use ($course) {
             // Delete all related media files
+            $course->deleteMedia($course->media);
             $course->media()->delete();
-
             // Delete the course record
             $course->delete();
-
             return [
                 'status' => 200,
                 'message' => 'تم حذف الدورة بنجاح' // Course deleted successfully

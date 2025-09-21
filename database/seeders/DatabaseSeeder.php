@@ -13,14 +13,17 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        User::factory()->create([
+    { $this->call([
+            CountrySeeder::class,
+            RolePermissionSeeder::class,
+        ]);
+        $user= User::factory()->create([
             'name' => 'admin',
             'email' => "test@gamil.com",
             'password' => bcrypt('TestP@ssword1233')
         ]);
-        $this->call([
-            CountrySeeder::class,
-        ]);
+$user->assignRole('user');
+
+
     }
 }

@@ -6,22 +6,33 @@ use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Service to handle all operations related to course ratings.
+ * Service class to handle all operations related to course ratings.
+ *
+ * Responsibilities:
+ * - Create a new rating
+ * - Update an existing rating
+ * - Delete a rating
  */
 class RatingService
 {
-    public function createRating(array $data)
+    /**
+     * Create a new rating for a course.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function createRating(array $data): array
     {
         $user = Auth::user();
 
-        // Prevent duplicate rating for the same course
-        $rate = Rating::where('user_id', $user->id)
-                      ->where('course_id', $data['course_id'])
-                      ->first();
+        // Check if the user has already rated this course
+        $existingRating = Rating::where('user_id', $user->id)
+                                ->where('course_id', $data['course_id'])
+                                ->first();
 
-        if ($rate) {
+        if ($existingRating) {
             return [
-                'status' => 409,
+                'status'  => 409,
                 'message' => "لقد قمت بالتقييم من قبل.",
             ];
         }
@@ -34,30 +45,43 @@ class RatingService
         ]);
 
         return [
-            'status' => 200,
+            'status'  => 200,
             'message' => "تم إضافة التقييم بنجاح.",
         ];
     }
 
-    public function updateRating(array $data, Rating $rate)
+    /**
+     * Update an existing rating.
+     *
+     * @param array $data
+     * @param Rating $rating
+     * @return array
+     */
+    public function updateRating(array $data, Rating $rating): array
     {
-        $rate->update([
+        $rating->update([
             'rating'  => $data['rating'],
-            'comment' => $data['comment'] ?? $rate->comment,
+            'comment' => $data['comment'] ?? $rating->comment,
         ]);
 
         return [
-            'status' => 200,
+            'status'  => 200,
             'message' => "تم تحديث التقييم بنجاح.",
         ];
     }
 
-    public function deleteRating(Rating $rate)
+    /**
+     * Delete a rating.
+     *
+     * @param Rating $rating
+     * @return array
+     */
+    public function deleteRating(Rating $rating): array
     {
-        $rate->delete();
+        $rating->delete();
 
         return [
-            'status' => 200,
+            'status'  => 200,
             'message' => "تم حذف التقييم بنجاح.",
         ];
     }

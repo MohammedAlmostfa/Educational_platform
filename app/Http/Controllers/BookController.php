@@ -44,17 +44,6 @@ class BookController extends Controller
             : self::error(null, $result['message'], $result['status']);
     }
 
-    /**
-     * Display the specified book.
-     */
-    public function show(Book $book)
-    {
-        return response()->json([
-            'status' => 200,
-            'message' => 'تم جلب الكتاب بنجاح',
-            'data' => $book->load('media'),
-        ], 200);
-    }
 
     /**
      * Update the specified book.

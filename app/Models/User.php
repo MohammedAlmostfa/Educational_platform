@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use App\Traits\HasCustomMedia;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +23,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasCustomMedia;
+    use HasFactory, Notifiable, HasCustomMedia ,HasRoles;
 
     /**
      * Guard name for JWT Authentication (typically 'api').
@@ -101,15 +102,19 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
- public function media()
-{
-    return $this->morphMany(Media::class, 'model');
-}
-public function ratings()
-{
-    return $this->hasMany(Rating::class);
-}
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'model');
+    }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 
-
-
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 }
