@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'email' => "test@gamil.com",
             'password' => bcrypt('TestP@ssword1233')
         ]);
-$user->assignRole('user');
+$user->assignRole('admin');
 
 
     }
