@@ -30,14 +30,14 @@ Route::post('/checkCode',        [ForgetPasswordController::class, 'checkCode'])
 // Public Resources (index only)
 //---------------------------//
 Route::get('courses',  [CourseController::class, 'index'])->name('courses.index');
-Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
+
 Route::get('books',    [BookController::class, 'index'])->name('books.index');
 
 //---------------------------//
 // Authenticated Routes
 //---------------------------//
 Route::middleware(['auth:api', CheckPermission::class])->group(function () {
-
+Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
     //---------------------------//
     // User info
     //---------------------------//
