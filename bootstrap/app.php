@@ -119,7 +119,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
                     'success' => 'error',
-                    'message' => 'غير مصرح بالدخول',
+                    'message' => 'غير مسجل دخول',
                     'error_code' => 'UNAUTHENTICATED',
                     'status' => 401
                 ], 401);
