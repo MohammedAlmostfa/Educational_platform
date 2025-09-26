@@ -25,7 +25,7 @@ Route::post('/resendCode',       [AuthController::class, 'resendCode'])->name('a
 Route::post('/changePassword',   [ForgetPasswordController::class, 'changePassword'])->name('password.change');
 Route::post('/checkEmail',       [ForgetPasswordController::class, 'checkEmail'])->name('password.check_email');
 Route::post('/checkCode',        [ForgetPasswordController::class, 'checkCode'])->name('password.check_code');
-
+   Route::post('refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
 //---------------------------//
 // Public Resources (index only)
 //---------------------------//
@@ -118,5 +118,5 @@ Route::get('articles', [ArticleController::class, 'index'])->name('articles.inde
     // Auth Actions
     //---------------------------//
     Route::post('logout',  [AuthController::class, 'logout'])->name('auth.logout');
-    Route::post('refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
+
 });
