@@ -22,7 +22,7 @@ class CourseService
             ->when(!empty($filters), function ($query) use ($filters) {
                 $query->filter($filters);
             })
-            ->paginate(10);
+      ->get();
 
 
         return [

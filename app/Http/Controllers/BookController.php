@@ -27,7 +27,7 @@ class BookController extends Controller
         $result = $this->bookService->getAllBooks($validatedData);
 
         return $result['status'] === 200
-            ? self::paginated ($result['data'],BookResource::class, $result['message'], $result['status'])
+            ? self::success (BookResource::collection($result['data']), $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
 

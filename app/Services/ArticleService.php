@@ -26,7 +26,7 @@ class ArticleService
         ->when(!empty($filters), function ($query) use ($filters) {
             $query->filter($filters); // Use scopeFilter
         })
-        ->paginate(10); // Paginated list of articles
+        ->get();
 
     return [
         'status'  => 200,

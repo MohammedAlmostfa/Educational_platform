@@ -39,7 +39,7 @@ class CourseController extends Controller
         $result = $this->courseService->getAllCourses($validatedData);
 
         return $result['status'] === 200
-            ? self::paginated($result['data'], CourseResource::class, $result['message'], $result['status'])
+            ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
 

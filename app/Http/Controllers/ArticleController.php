@@ -37,16 +37,16 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
- public function index(ArticleFilterRequest $request)
-{
+    public function index(ArticleFilterRequest $request)
+    {
 
-$validatedData=$request->validated();
-    $result = $this->articleService->getAllArticles($validatedData);
+        $validatedData = $request->validated();
+        $result = $this->articleService->getAllArticles($validatedData);
 
-    return $result['status'] === 200
-        ? self::paginated($result['data'], ArticalResource::class, $result['message'], $result['status'])
-        : self::error(null, $result['message'], $result['status']);
-}
+        return $result['status'] === 200
+            ? self::success(ArticalResource::collection($result['data']), $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
+    }
 
     /**
      * Store a newly created resource in storage.

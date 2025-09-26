@@ -24,8 +24,7 @@ class BookService
         $books = Book::with('media')->when(!empty($filters), function ($query) use ($filters) {
             $query->filter($filters); // Use scopeFilter
         })
-            ->paginate(10);
-
+      ->get();
         return [
             'status'  => 200,
             'message' => 'تم استرجاع جميع الكتب بنجاح',
