@@ -10,6 +10,7 @@ use App\Http\Resources\CourseResource;
 use App\Http\Requests\courseRequest\StoreCourseRequest;
 use App\Http\Requests\courseRequest\CourseFilterRequest;
 use App\Http\Requests\courseRequest\UpdateCourseRequest;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -33,10 +34,10 @@ class CourseController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(CourseFilterRequest $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $validatedData = $request->validated();
-        $result = $this->courseService->getAllCourses($validatedData);
+        $searchData = $request->input('search');
+        $result = $this->courseService->getAllCourses($searchData);
 
         return $result['status'] === 200
             ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])

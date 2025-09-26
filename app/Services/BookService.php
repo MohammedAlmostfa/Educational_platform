@@ -18,20 +18,20 @@ class BookService
      *
      * @return array Unified response with status, message, and data
      */
-    public function getAllBooks($filters)
-    {
-        // Fetch books with related media (10 items per page)
-        $books = Book::with('media')->when(!empty($filters), function ($query) use ($filters) {
-            $query->filter($filters); // Use scopeFilter
+   public function getAllBooks($searchData)
+{
+    $books = Book::with('media')
+        ->when(!empty($searchData), function ($query) use ($searchData) {
+            $query->search($searchData);
         })
-      ->get();
-        return [
-            'status'  => 200,
-            'message' => 'تم استرجاع جميع الكتب بنجاح',
-            'data'    => $books,
+        ->get();
 
-        ];
-    }
+    return [
+        'status'  => 200,
+        'message' => 'تم استرجاع جميع الكتب بنجاح',
+        'data'    => $books,
+    ];
+}
 
     /**
      * Create a new book and optionally upload an associated file.

@@ -18,13 +18,13 @@ class ArticleService
      *
      * @return array Unified response with status, message, and data
      */
-    public function getAllArticles($filters)
+    public function getAllArticles($searchData)
 {
-    Log::info("filters", $filters);
+
     // Apply filters only if $filters is not empty, then paginate
     $articles = Article::with('media')
-        ->when(!empty($filters), function ($query) use ($filters) {
-            $query->filter($filters); // Use scopeFilter
+        ->when(!empty($searchData), function ($query) use ($searchData) {
+             $query->search($searchData);
         })
         ->get();
 

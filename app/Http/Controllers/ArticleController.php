@@ -37,11 +37,11 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ArticleFilterRequest $request)
+    public function index(Request $request)
     {
 
-        $validatedData = $request->validated();
-        $result = $this->articleService->getAllArticles($validatedData);
+         $searchData = $request->input('search');
+        $result = $this->articleService->getAllArticles($searchData);
 
         return $result['status'] === 200
             ? self::success(ArticalResource::collection($result['data']), $result['message'], $result['status'])

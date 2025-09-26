@@ -11,34 +11,41 @@ class Book extends Model
 
     /**
      * Attributes that are mass assignable.
+     *
+     * @var array
      */
     protected $fillable = ['name', 'description', 'author'];
 
     /**
      * Polymorphic relationship for associated media files.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function media()
     {
         return $this->morphMany(Media::class, 'model');
     }
 
+
+
     /**
-     * Scope to filter books based on given filters.
+     * Scope to search books by a search term.
+     * Searches only in 'name' and 'author' columns.
      *
-     * Usage: Book::filter($filters)->get();
+     * Example usage:
+     * Book::search('Laravel')->get();
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $filters
+     * @param string|null $term
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeFilter($query, $filters)
+    public function scopeSearch($query, $term)
     {
-        if (isset($filters['name'])) {
-            $query->where('name', 'like', '%' . $filters['name'] . '%');
-        }
-
-        if (isset($filters['author'])) {
-            $query->where('author', 'like', '%' . $filters['author'] . '%');
+        if ($term) {
+            $query->where(function ($q) use ($term) {
+                $q->orWhere('name', 'like', '%' . $term . '%')
+                  ->orWhere('author', 'like', '%' . $term . '%');
+            });
         }
 
         return $query;

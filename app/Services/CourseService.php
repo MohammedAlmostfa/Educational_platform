@@ -15,14 +15,14 @@ class CourseService
      *
      * @return array
      */
-    public function getAllCourses($filters)
+    public function getAllCourses($searchData)
     {
         $courses = Course::with('media')
-            ->withAvg('ratings', 'rating') // هذا يعطيك avg_rating
-            ->when(!empty($filters), function ($query) use ($filters) {
-                $query->filter($filters);
+            ->withAvg('ratings', 'rating')
+            ->when(!empty($searchData), function ($query) use ($searchData) {
+                $query->search($searchData);
             })
-      ->get();
+            ->get();
 
 
         return [

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Http\Request;
 use App\Services\BookService;
 use App\Http\Resources\BookResource;
 use App\Http\Requests\BookRequest\StoreBookRequest;
 use App\Http\Requests\BookRequest\BookFilterRequest;
 use App\Http\Requests\BookRequest\UpdateBookRequest;
+
 
 class BookController extends Controller
 {
@@ -21,15 +23,16 @@ class BookController extends Controller
     /**
      * Display a listing of books.
      */
-    public function index(BookFilterRequest $request)
-    {
-        $validatedData=$request->validated();
-        $result = $this->bookService->getAllBooks($validatedData);
+  public function index(Request $request)
+{
+    $searchData = $request->input('search');
+    $result = $this->bookService->getAllBooks($searchData);
 
-        return $result['status'] === 200
-            ? self::success (BookResource::collection($result['data']), $result['message'], $result['status'])
-            : self::error(null, $result['message'], $result['status']);
-    }
+    return $result['status'] === 200
+        ? self::success(BookResource::collection($result['data']), $result['message'], $result['status'])
+        : self::error(null, $result['message'], $result['status']);
+}
+
 
     /**
      * Store a newly created book.
