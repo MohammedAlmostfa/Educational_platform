@@ -133,8 +133,7 @@ class RolePermissionSeeder extends Seeder
             'courses.show',
             'courses.enrollment.store',
             'courses.enrollment.delete',
-            'users.courses.index',
-            'users.courses.update_status',
+
 
             // Books
             'books.index',
