@@ -40,7 +40,7 @@ class UpdateRatingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating'  => 'nullable|integer|min:1|max:5',
+          'rating' => 'required|numeric|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ];
     }

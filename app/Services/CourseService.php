@@ -18,7 +18,7 @@ class CourseService
      */
     public function getAllCourses($searchData)
     {
-        $courses = Course::with('media')
+        $courses = Course::with(['media','ratings'])
             ->withAvg('ratings', 'rating')
             ->when(!empty($searchData), function ($query) use ($searchData) {
                 $query->search($searchData); // Uses scopeSearch in Course model

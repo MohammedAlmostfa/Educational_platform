@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -23,7 +25,7 @@ class UserService
     {
         // Get the currently authenticated user
         $user = Auth::user();
-        $user = User::find($user->id);
+
 
         $courses = $user->courses()
             ->with([

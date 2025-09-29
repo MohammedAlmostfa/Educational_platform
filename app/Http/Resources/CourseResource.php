@@ -22,10 +22,11 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'instructor' => $this->instructor,
             'duration' => $this->duration,
-            'price' => $this->price ,
-            'averageRating'=>(Double) $this->ratings_avg_rating ?? null,
+            'price' => $this->price,
+            'averageRating' => (float) $this->ratings_avg_rating ?? null,
             'photo'       => $firstMedia ? asset('storage/' . $firstMedia->path) : null,
- 'tasks' => TaskResource::collection($this->whenLoaded('tasks'))
+            'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
+            'ratings' => RatingResource::collection($this->whenLoaded('ratings'))
         ];
     }
 }
