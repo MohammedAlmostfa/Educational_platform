@@ -85,4 +85,9 @@ class Course extends Model
                     ->withPivot('status')
                     ->withTimestamps();
     }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
 }

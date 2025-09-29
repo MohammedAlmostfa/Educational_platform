@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\CourseEnrollmentController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\TaskController;
 use App\Http\Middleware\CheckPermission;
 
 //---------------------------//
@@ -108,17 +110,29 @@ Route::middleware(['auth:api'])->group(function () {
     // Courses (without index)
     //---------------------------//
     Route::apiResource('courses', CourseController::class)
-        ->except(['index'])
+        ->except(['index','show'])
         ->names([
             'store'   => 'courses.store',
-            'show'    => 'courses.show',
+
             'update'  => 'courses.update',
             'destroy' => 'courses.destroy',
         ]);
+Route::get('courses/tasks', [CourseController::class, 'getTaskWithTasks']);
 
     //---------------------------//
     // Auth Actions
     //---------------------------//
     Route::post('logout',  [AuthController::class, 'logout'])->name('auth.logout');
+        Route::apiResource('tasks', TaskController::class)
+        ->except(['index'])
+        ->names([
+            'store'   => 'tasks.store',
+            'show'    => 'tasks.show',
+            'update'  => 'tasks.update',
+            'destroy' => 'tasks.destroy',
+        ]);
+
+        Route::get('/user/tasks', [UserController::class, 'getUserTasks']);
+
 
 });

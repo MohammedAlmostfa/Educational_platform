@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 class CourseService
 {
     /**
-     * Retrieve all courses with pagination.
+     * Retrieve all courses with optional search filtering.
      *
-     * This method fetches courses along with their related media.
-     * It returns paginated results (10 per page by default).
+     * This method fetches courses along with their related media and average ratings.
+     * It can filter courses based on search data.
      *
+     * @param string|null $searchData
      * @return array
      */
     public function getAllCourses($searchData)
@@ -20,10 +21,38 @@ class CourseService
         $courses = Course::with('media')
             ->withAvg('ratings', 'rating')
             ->when(!empty($searchData), function ($query) use ($searchData) {
-                $query->search($searchData);
+                $query->search($searchData); // Uses scopeSearch in Course model
             })
             ->get();
 
+        return [
+            'status' => 200,
+            'message' => 'تم استرجاع الدورات بنجاح', // Courses retrieved successfully
+            'data' => $courses
+        ];
+    }
+
+    /**
+     * Retrieve all courses along with their tasks and associated media.
+     *
+     * Each course will include its media, tasks, and each task's media.
+     * Can also filter courses based on search criteria.
+     *
+     * @param string|null $searchData
+     * @return array
+     */
+    public function getTaskWithTasks($searchData)
+    {
+        $courses = Course::with([
+                'media',       // Course media
+                'tasks',       // Related tasks
+                'tasks.media'  // Media for each task
+            ])
+            ->withAvg('ratings', 'rating')
+            ->when(!empty($searchData), function ($query) use ($searchData) {
+                $query->search($searchData); // Scope search in the Course model
+            })
+            ->get();
 
         return [
             'status' => 200,
@@ -36,17 +65,17 @@ class CourseService
      * Create a new course.
      *
      * This method creates a course record in the database.
-     * If a 'photo' file is provided, it will store the media file.
+     * If a 'photo' file is provided, it will store it as course media.
      *
      * @param array $data
      * @return array
      */
     public function createCourse($data)
     {
-        // Create course record
+        // Create the course record
         $course = Course::create($data);
 
-        // Store media file if provided
+        // Store the media file if provided
         if (!empty($data['photo'])) {
             $course->storeMediaFile($data['photo'], 'courses/photo', true);
         }
@@ -60,8 +89,7 @@ class CourseService
     /**
      * Update an existing course.
      *
-     * This method updates course data.
-     * If a 'photo' file is provided, it will replace the existing media file.
+     * Updates the course data and optionally replaces the course photo.
      *
      * @param \App\Models\Course $course
      * @param array $data
@@ -84,10 +112,10 @@ class CourseService
     }
 
     /**
-     * Delete a course.
+     * Delete a course along with its media.
      *
-     * This method deletes the course along with all related media files
-     * using a database transaction to ensure data integrity.
+     * Uses a database transaction to ensure all related media and the course itself
+     * are deleted safely.
      *
      * @param \App\Models\Course $course
      * @return array
@@ -95,11 +123,13 @@ class CourseService
     public function deleteCourse($course)
     {
         return DB::transaction(function () use ($course) {
-            // Delete all related media files
+            // Delete all media files related to the course
             $course->deleteMedia($course->media);
             $course->media()->delete();
+
             // Delete the course record
             $course->delete();
+
             return [
                 'status' => 200,
                 'message' => 'تم حذف الدورة بنجاح' // Course deleted successfully

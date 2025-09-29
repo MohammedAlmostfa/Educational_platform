@@ -2,11 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest\StoreTaskRequest;
+use App\Http\Requests\TaskRequest\UpdateTaskRequest;
 use App\Models\Task;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+
+    /**
+     * @var TaskService
+     * Service to handle task-related operations.
+     */
+    protected $taskService;
+
+    /**
+     * Inject the TaskService into the controller.
+     *
+     * @param TaskService $taskService
+     */
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -18,18 +38,20 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function store(StoreTaskRequest $request)
     {
-        //
+        $validated = $request->validated();
+        // Pass validated data to the service to create the rating
+        $result = $this->taskService->createTask($validated);
+
+        // Return JSON response based on result
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+
+
 
     /**
      * Display the specified resource.
@@ -50,9 +72,16 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        $validated = $request->validated();
+        // Pass validated data to the service to create the rating
+        $result = $this->taskService->updateTask($task, $validated);
+
+        // Return JSON response based on result
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 
     /**
@@ -60,6 +89,13 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+
+        // Pass validated data to the service to create the rating
+        $result = $this->taskService->deleteTask($task);
+
+        // Return JSON response based on result
+        return $result['status'] === 200
+            ? self::success(null, $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
     }
 }

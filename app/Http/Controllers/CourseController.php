@@ -44,6 +44,15 @@ class CourseController extends Controller
             : self::error(null, $result['message'], $result['status']);
     }
 
+    public function getTaskWithTasks(Request $request): JsonResponse
+    {
+  $searchData = $request->input('search');
+        $result = $this->courseService->getTaskWithTasks($searchData);
+
+        return $result['status'] === 200
+          ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
+    }
     /**
      * Store a newly created course in storage.
      *

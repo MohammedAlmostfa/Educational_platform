@@ -25,7 +25,7 @@ class CourseResource extends JsonResource
             'price' => $this->price ,
             'averageRating'=>(Double) $this->ratings_avg_rating ?? null,
             'photo'       => $firstMedia ? asset('storage/' . $firstMedia->path) : null,
-
+ 'tasks' => TaskResource::collection($this->whenLoaded('tasks'))
         ];
     }
 }
