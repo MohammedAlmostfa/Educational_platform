@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     { $this->call([
-            CountrySeeder::class,
+            GovernorateSeeder::class,
             RolePermissionSeeder::class,
         ]);
         $user= User::factory()->create([

@@ -24,7 +24,7 @@ class Profile extends Model
         'birthday',
         'phone',
         'address',
-        'country_id'
+        'governorate_id'
     ];
 
     /**
@@ -80,9 +80,9 @@ class Profile extends Model
      *
      * @return BelongsTo
      */
-    public function country(): BelongsTo
+    public function governorate(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Governorate::class);
     }
 
 }

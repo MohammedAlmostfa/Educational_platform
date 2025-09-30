@@ -27,35 +27,14 @@ class StoreProfileRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-
             'birthday' => 'nullable|date|before:-13 years',
             'phone' => 'required',
             'address' => 'required',
-            'longitude' => 'nullable|',
-            'latitude' => 'nullable|',
-            'photo' => [
-                'nullable',
-                'mimetypes:image/jpeg,image/png,image/gif,image/webp',
-                'max:5120',
-                new CheckFile
-            ],
+            'governorate_id' => 'required|exists:governorates,id'
+
+
         ];
     }
 
-    /**
-     * Handle a failed validation attempt.
-     * This method is called when validation fails.
-     * Logs failed attempts and throws validation exception.
-     * @param \Illuminate\Validation\Validator $validator
-     * @return void
-     *
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        throw new HttpResponseException(response()->json([
-            'status'  => 'error',
-            'message' => 'Validation failed.',
-            'errors'  => $validator->errors(),
-        ], 422));
-    }
+
 }

@@ -2,17 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckPermission;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RatingController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\CourseEnrollmentController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
-use App\Http\Controllers\TaskController;
-use App\Http\Middleware\CheckPermission;
 
 //---------------------------//
 // Public Auth Routes
@@ -35,7 +36,7 @@ Route::post('refresh', [AuthController::class, 'refresh'])->name('auth.refresh')
 Route::get('courses',  [CourseController::class, 'index'])->name('courses.index');
 
 Route::get('books',    [BookController::class, 'index'])->name('books.index');
-
+Route::get('/governorate',  [GovernorateController::class,'index']) ;
 //---------------------------//
 // Authenticated Routes
 //---------------------------//
@@ -46,6 +47,8 @@ Route::middleware(['auth:api'])->group(function () {
     // User info
     //---------------------------//
     Route::get('me', [ProfileController::class, 'getme'])->name('profiles.me');
+
+
 
     //---------------------------//
     // Profiles

@@ -56,7 +56,7 @@ class Course extends Model
         if ($term) {
             $query->where(function ($q) use ($term) {
                 $q->orWhere('title', 'like', '%' . $term . '%')
-                  ->orWhere('instructor', 'like', '%' . $term . '%');
+                    ->orWhere('instructor', 'like', '%' . $term . '%');
             });
         }
 
@@ -82,12 +82,11 @@ class Course extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)
-                    ->withPivot('status')
-                    ->withTimestamps();
+            ->withPivot('status')
+            ->withTimestamps();
     }
     public function tasks()
     {
         return $this->hasMany(Task::class);
     }
-
 }

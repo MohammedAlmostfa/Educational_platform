@@ -3,8 +3,9 @@
 namespace App\Services\Auth;
 
 use App\Models\Profile;
-use Illuminate\Container\Attributes\Auth;
+
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class ProfileService
@@ -41,13 +42,9 @@ class ProfileService
                     'phone'      => $data['phone'],
                     'address'    => $data['address'],
                     'user_id'    => $user->id,
-                    'country_id' => $data['country_id'] ?? null,
+                    'governorate_id' => $data['governorate_id'] ?? null,
                 ]);
 
-                // Upload and attach profile photo if provided
-                if (!empty($data['photo'])) {
-                    $user->storeMediaFile($data['photo'], 'users/photos', true);
-                }
             });
 
             return [
@@ -91,9 +88,7 @@ class ProfileService
                     'birthday'   => $data['birthday'] ?? $profile->birthday,
                     'phone'      => $data['phone'] ?? $profile->phone,
                     'address'    => $data['address'] ?? $profile->address,
-                    'longitude'  => $data['longitude'] ?? $profile->longitude,
-                    'latitude'   => $data['latitude'] ?? $profile->latitude,
-                    'country_id' => $data['country_id'] ?? $profile->country_id,
+                    'governorate_id' => $data['governorate_id'] ?? $profile->governorate_id,
                 ]);
 
                 // Update profile photo if provided
@@ -132,13 +127,9 @@ class ProfileService
             'id'       => $user->id,
             'name'     => $user->name,
             'email'    => $user->email,
-            'birthday' => $user->profile?->birthday?->format('Y-m-d'),
             'phone'    => $user->profile?->phone,
             'address'  => $user->profile?->address,
-            'country'  => $user->profile?->country?->name,
-            'photo'    => $user->media()->first()
-                ? asset('storage/' . $user->media()->first()->path)
-                : null,
+            'governorate'  => $user->profile?->governorate?->name,
         ];
 
         return [

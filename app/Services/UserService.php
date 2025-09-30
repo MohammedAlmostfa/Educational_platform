@@ -17,7 +17,9 @@ class UserService
 {
     public function getUsers()
 {
-    $users = User::all();
+$users = User::select('id', 'email','name')
+    ->with('profile','courses')
+    ->get();
 
     return [
         'status'  => 200,
