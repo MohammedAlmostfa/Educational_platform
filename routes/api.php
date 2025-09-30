@@ -133,6 +133,7 @@ Route::get('courses/tasks', [CourseController::class, 'getTaskWithTasks']);
         ]);
 
         Route::get('/user/tasks', [UserController::class, 'getUserTasks']);
+        Route::get('users',[UserController::class,'index']);
 
 
 });

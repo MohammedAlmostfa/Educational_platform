@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use Illuminate\Http\Request;
 use App\Services\CourseService;
+
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Resources\CourseResource;
 use App\Http\Requests\courseRequest\StoreCourseRequest;
-use App\Http\Requests\courseRequest\CourseFilterRequest;
 use App\Http\Requests\courseRequest\UpdateCourseRequest;
-use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -46,11 +45,11 @@ class CourseController extends Controller
 
     public function getTaskWithTasks(Request $request): JsonResponse
     {
-  $searchData = $request->input('search');
-        $result = $this->courseService->getTaskWithTasks($searchData);
+        $searchData = $request->input('search');
+        $result = $this->courseService->getCourseWithTasks($searchData);
 
         return $result['status'] === 200
-          ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])
+            ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
     /**

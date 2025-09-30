@@ -41,12 +41,15 @@ class CourseService
      * @param string|null $searchData
      * @return array
      */
-    public function getTaskWithTasks($searchData)
+    public function getCourseWithTasks($searchData)
     {
         $courses = Course::with([
                 'media',       // Course media
                 'tasks',       // Related tasks
-                'tasks.media'  // Media for each task
+                'tasks.media',
+                'ratings','ratings.user',
+
+                // Media for each task
             ])
             ->withAvg('ratings', 'rating')
             ->when(!empty($searchData), function ($query) use ($searchData) {

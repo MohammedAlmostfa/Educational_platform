@@ -15,6 +15,17 @@ use Illuminate\Support\Facades\Auth;
  */
 class UserService
 {
+    public function getUsers()
+{
+    $users = User::all();
+
+    return [
+        'status'  => 200,
+        'message' => 'تم استرجاع المستخدمين بنجاح',
+        'data'    => $users
+    ];
+}
+
     /**
      * Get the authenticated user's courses along with tasks and related media.
      *
