@@ -79,11 +79,22 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('courses/{courseId}/enrollment', [CourseEnrollmentController::class, 'delete'])->name('courses.enrollment.delete');
     Route::get('users/{userId}/courses',           [CourseEnrollmentController::class, 'index'])->name('users.courses.index');
     Route::put('users/{userId}/courses/{courseId}/status', [CourseEnrollmentController::class, 'update'])->name('users.courses.update_status');
+// عرض جميع الاشتراكات (مثلاً للإدمن)
+Route::get('enrollments', [CourseEnrollmentController::class, 'index'])
+    ->name('enrollments.index');
 
-    //---------------------------//
-    // Countries
-    //---------------------------//
-    Route::get('countries', [CountryController::class, "index"])->name('countries.index');
+// عرض تفاصيل اشتراك واحد
+Route::get('enrollments/{id}', [CourseEnrollmentController::class, 'show'])
+    ->name('enrollments.show');
+
+// عرض اشتراكات كورس معيّن
+Route::get('courses/{courseId}/enrollments', [CourseEnrollmentController::class, 'courseEnrollments'])
+    ->name('courses.enrollments.index');
+
+// عرض اشتراكات مستخدم معيّن
+Route::get('users/{userId}/enrollments', [CourseEnrollmentController::class, 'userEnrollments'])
+    ->name('users.enrollments.index');
+
 
     //---------------------------//
     // Articles (without index)

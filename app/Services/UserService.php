@@ -18,7 +18,7 @@ class UserService
     public function getUsers()
 {
 $users = User::select('id', 'email','name')
-    ->with('profile','courses')
+    ->with('profile','profile.governorate')
     ->get();
 
     return [
