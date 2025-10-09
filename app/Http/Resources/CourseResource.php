@@ -26,7 +26,8 @@ class CourseResource extends JsonResource
             'averageRating' => (float) $this->ratings_avg_rating ?? null,
             'photo'       => $firstMedia ? asset('storage/' . $firstMedia->path) : null,
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
-            'ratings' => RatingResource::collection($this->whenLoaded('ratings'))
+            'ratings' => RatingResource::collection($this->whenLoaded('ratings')),
+            'videos'=>VideoResource::collection($this->whenLoaded('videos'))
         ];
     }
 }

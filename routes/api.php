@@ -127,12 +127,13 @@ Route::get('users/{userId}/enrollments', [CourseEnrollmentController::class, 'us
         ->except(['index','show'])
         ->names([
             'store'   => 'courses.store',
-
             'update'  => 'courses.update',
             'destroy' => 'courses.destroy',
         ]);
 Route::get('courses/tasks', [CourseController::class, 'getTaskWithTasks']);
 
+Route::post('courses/{course}/video', [CourseController::class, 'AddCourseVidieo']);
+Route::delete('courses/{course}/video/{mediaId}', [CourseController::class, 'DeleteCourseVidieo']);
     //---------------------------//
     // Auth Actions
     //---------------------------//

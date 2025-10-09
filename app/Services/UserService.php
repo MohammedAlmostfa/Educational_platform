@@ -43,6 +43,7 @@ $users = User::select('id', 'email','name')
         $courses = $user->courses()
             ->with([
                 'media',       // Course media
+                'videos',
                 'tasks',       // Related tasks
                 'tasks.media'  // Media for each task
             ])

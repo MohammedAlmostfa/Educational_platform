@@ -25,9 +25,6 @@ class Book extends Model
     {
         return $this->morphMany(Media::class, 'model');
     }
-
-
-
     /**
      * Scope to search books by a search term.
      * Searches only in 'name' and 'author' columns.
