@@ -4,9 +4,11 @@ use Psr\Log\LogLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Lottery;
 use App\Exceptions\CustomException;
+use function Laravel\Prompts\error;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
@@ -16,10 +18,9 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-
-use function Laravel\Prompts\error;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -31,6 +32,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })
+
+->withMiddleware(function ($middleware) {
+    $middleware->alias([
+        'check.permission' => CheckPermission::class,
+    ]);
+})
     ->withExceptions(function (Exceptions $exceptions): void {
 
         // 1. تجاهل استثناءات معينة عن الإبلاغ
@@ -260,36 +267,32 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
 
+$exceptions->render(function (Throwable $e, Request $request) {
+    Log::error('Unhandled Exception', [
+        'exception' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'url' => request()->fullUrl(),
+        'ip' => request()->ip()
+    ]);
 
-        // 18. معالجة أي استثناء لم يتم التعامل معه
-        $exceptions->render(function (Throwable $e, Request $request) {
-            Log::error('Unhandled Exception', [
-                'exception' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'url' => request()->fullUrl(),
-                'ip' => request()->ip()
-            ]);
+    $message = 'حدث خطأ غير متوقع أثناء معالجة الطلب';
 
-            $message = 'حدث خطأ غير متوقع أثناء معالجة الطلب';
+    if (app()->environment('local')) {
+        $message = $e->getMessage();
+    }
 
-            if (app()->environment('local')) {
-                $message = $e->getMessage();
-            }
+    if ($request->expectsJson() || $request->is('api/*')) {
+        return response()->json([
+            'success' => 'error',
+            'message' => $message,
+            'error_code' => 'UNEXPECTED_ERROR',
+            'status' => 500
+        ], 500);
+    }
 
-            if ($request->expectsJson() || $request->is('api/*')) {
-                return response()->json([
-                    'success' => 'error',
-                    'message' => $message,
-                    'error_code' => 'UNEXPECTED_ERROR',
-                    'status' => 500
-                ], 500);
-            }
+    // بدل View، عرض Flutter Web مباشرة
+    return response()->file(public_path('index.html'));
+});
 
-            return response()->view('errors.500', [
-                'message' => $message,
-                'title' => 'خطأ في الخادم',
-                'exception' => app()->environment('local') ? $e : null
-            ], 500);
-        });
     })->create();

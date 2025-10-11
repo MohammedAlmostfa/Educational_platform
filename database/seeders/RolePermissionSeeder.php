@@ -14,7 +14,7 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         //---------------------------//
-        // 1️⃣ Define all permissions (same as route names)
+        // 1️⃣ Define all permissions (match route names)
         //---------------------------//
         $permissions = [
             // Auth
@@ -44,15 +44,21 @@ class RolePermissionSeeder extends Seeder
             // Courses
             'courses.index',
             'courses.store',
-            'courses.show',
             'courses.update',
             'courses.destroy',
+            'courses.tasks.index',
+            'courses.video.store',
+            'courses.video.delete',
 
             // Course Enrollment
             'courses.enrollment.store',
             'courses.enrollment.delete',
             'users.courses.index',
             'users.courses.update_status',
+            'enrollments.index',
+            'enrollments.show',
+            'courses.enrollments.index',
+            'users.enrollments.index',
 
             // Books
             'books.index',
@@ -71,7 +77,7 @@ class RolePermissionSeeder extends Seeder
             // Countries
             'countries.index',
 
-            // Roles / Users / Reports
+            // Optional: Users / Roles / Reports
             'manage-users',
             'manage-roles',
             'view-reports',
@@ -81,7 +87,10 @@ class RolePermissionSeeder extends Seeder
         // 2️⃣ Create permissions
         //---------------------------//
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         //---------------------------//
@@ -95,13 +104,6 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'user', 'guard_name' => 'api']
         );
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(
-                ['name' => $permission, 'guard_name' => 'api']
-            );
-        }
-
-
         //---------------------------//
         // 4️⃣ Assign permissions to roles
         //---------------------------//
@@ -109,8 +111,8 @@ class RolePermissionSeeder extends Seeder
         $adminRole->syncPermissions($permissions);
 
         // User gets LIMITED permissions
-        $userRole->syncPermissions([
-
+        $userPermissions = [
+            // Auth
             'auth.login',
             'auth.login.google',
             'auth.register',
@@ -118,22 +120,20 @@ class RolePermissionSeeder extends Seeder
             'auth.refresh',
             'auth.verify_email',
             'auth.resend_code',
+
             // Profiles
             'profiles.index',
-            'profiles.store',
             'profiles.show',
             'profiles.update',
-            'profiles.destroy',
             'profiles.me',
-            // General access
-            'countries.index',
 
-            // Courses (view + enroll)
+            // Courses
             'courses.index',
-            'courses.show',
             'courses.enrollment.store',
             'courses.enrollment.delete',
-
+            'users.courses.index',
+            'courses.enrollments.index',
+            'users.enrollments.index',
 
             // Books
             'books.index',
@@ -147,6 +147,11 @@ class RolePermissionSeeder extends Seeder
             'ratings.store',
             'ratings.update',
             'ratings.destroy',
-        ]);
+
+            // General
+            'countries.index',
+        ];
+
+        $userRole->syncPermissions($userPermissions);
     }
 }

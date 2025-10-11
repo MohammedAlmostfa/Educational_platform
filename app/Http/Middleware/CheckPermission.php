@@ -7,13 +7,6 @@ use Illuminate\Http\Request;
 
 class CheckPermission
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
@@ -21,13 +14,12 @@ class CheckPermission
 
         if ($user && $routeName && !$user->can($routeName)) {
             return response()->json([
-                'success'    => false,
-                'message'    => 'غير مسموح بهذا الإجراء',
+                'success' => false,
+                'message' => 'غير مسموح بهذا الإجراء',
                 'error_code' => 'UNAUTHORIZED',
-                'status'     => 403,
+                'status' => 403,
             ], 403);
         }
-
 
         return $next($request);
     }

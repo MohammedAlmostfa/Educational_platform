@@ -50,20 +50,6 @@ class Profile extends Model
         1 => 'female',
     ];
 
-    /**
-     * Accessor and mutator for the gender field.
-     * Converts numeric value to a readable string when getting,
-     * and converts string back to numeric when setting.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    public function genderStatus(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => self::GENDER_MAP[$value] ?? 'UNKNOWN',
-            set: fn($value) => array_search($value, self::GENDER_MAP, true)
-        );
-    }
 
     /**
      * Get the user that this profile belongs to.

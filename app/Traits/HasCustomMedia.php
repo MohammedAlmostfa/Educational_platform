@@ -39,15 +39,23 @@ trait HasCustomMedia
         // Define storage folder: prefix or model name + date
         $folder = ($folderPrefix ?? strtolower(class_basename($this))) . '/' . now()->format('Y-m-d');
 
+        // Generate a unique filename to avoid duplicates
+        $filename = uniqid() . '_' . $file->getClientOriginalName();
+
         // Store file on the 'public' disk
-        $path = $file->store($folder, 'public');
+        $path = $file->storeAs($folder, $filename, 'public');
 
         // Create a media record
-        return $this->media()->create([
+        $mediaRecord = $this->media()->create([
             'path'      => $path,
             'mime_type' => $file->getMimeType(),
-            'type'      => $this->detectMediaType($file->getMimeType()), // optional helper
+            'type'      => $this->detectMediaType($file->getMimeType()),
         ]);
+
+        // Attach URL for direct access
+        $mediaRecord->url = Storage::disk('public')->url($path);
+
+        return $mediaRecord;
     }
 
     /**
@@ -69,7 +77,7 @@ trait HasCustomMedia
                 $media->delete();
             } catch (Exception $e) {
                 Log::error("Failed to delete media", [
-                    'id' => $media->id ?? null,
+                    'id'    => $media->id ?? null,
                     'error' => $e->getMessage(),
                 ]);
             }

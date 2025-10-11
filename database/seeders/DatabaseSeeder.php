@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\SubCategory;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Profile;
+use App\Models\Governorate;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,16 +14,30 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    { $this->call([
+    {
+        $this->call([
             GovernorateSeeder::class,
             RolePermissionSeeder::class,
         ]);
-        $user= User::factory()->create([
+
+        // إنشاء مستخدم admin
+        $user = User::factory()->create([
             'name' => 'admin',
             'email' => "test@gamil.com",
             'password' => bcrypt('TestP@ssword1233')
         ]);
-$user->assignRole('admin');
+        $user->assignRole('admin');
+
+
+        Profile::create([
+            'user_id'       => $user->id,
+            'birthday'      => '1990-01-01',
+            'phone'         => '1234567890',
+            'address'       => '123 Main Street, City',
+            'governorate_id'=> Governorate::first()?->id ?? 1, // أول محافظة موجودة أو افتراضية
+
+        ]);
+
 
 
     }
