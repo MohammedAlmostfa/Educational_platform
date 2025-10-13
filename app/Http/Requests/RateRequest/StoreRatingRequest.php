@@ -4,7 +4,7 @@ namespace App\Http\Requests\RateRequest;
 
 use App\Models\Rating;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Auth\Access\AuthorizationException;
 /**
  * FormRequest to validate and authorize creating a course rating.
  */
@@ -28,7 +28,10 @@ class StoreRatingRequest extends FormRequest
         // Check authorization via the RatingPolicy
         return $this->user()->can('store', $rating);
     }
-
+ protected function failedAuthorization()
+    {
+        throw new AuthorizationException('أنت غير مسجل في هذا التدريب.');
+    }
     /**
      * Get the validation rules that apply to the request.
      *
