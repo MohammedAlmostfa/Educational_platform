@@ -27,7 +27,7 @@ class StoreCourseVideoRequest extends FormRequest
             'video' => [
                 'required', // must be present
                 'file',
-                'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime,video/x-matroska',
+      'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime,video/x-matroska,video/webm',
                 new CheckFile, // your custom validation rule
             ],
         ];
