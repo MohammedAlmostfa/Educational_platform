@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\Auth\ProfileController;

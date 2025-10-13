@@ -17,71 +17,80 @@ class RolePermissionSeeder extends Seeder
         // 1️⃣ Define all permissions (match route names)
         //---------------------------//
         $permissions = [
-            // Auth
-            'auth.login',
-            'auth.login.google',
-            'auth.register',
-            'auth.logout',
-            'auth.refresh',
-            'auth.verify_email',
-            'auth.resend_code',
+    // Auth
+    'auth.login',
+    'auth.login.google',
+    'auth.register',
+    'auth.logout',
+    'auth.refresh',
+    'auth.verify_email',
+    'auth.resend_code',
 
-            // Profiles
-            'profiles.index',
-            'profiles.store',
-            'profiles.show',
-            'profiles.update',
-            'profiles.destroy',
-            'profiles.me',
+    // Profiles
+    'profiles.index',
+    'profiles.store',
+    'profiles.show',
+    'profiles.update',
+    'profiles.destroy',
+    'profiles.me',
 
-            // Ratings
-            'ratings.index',
-            'ratings.store',
-            'ratings.show',
-            'ratings.update',
-            'ratings.destroy',
+    // Ratings
+    'ratings.index',
+    'ratings.store',
+    'ratings.show',
+    'ratings.update',
+    'ratings.destroy',
 
-            // Courses
-            'courses.index',
-            'courses.store',
-            'courses.update',
-            'courses.destroy',
-            'courses.tasks.index',
-            'courses.video.store',
-            'courses.video.delete',
+    // Courses
 
-            // Course Enrollment
-            'courses.enrollment.store',
-            'courses.enrollment.delete',
-            'users.courses.index',
-            'users.courses.update_status',
-            'enrollments.index',
-            'enrollments.show',
-            'courses.enrollments.index',
-            'users.enrollments.index',
+    'courses.show',
+    'courses.store',
+    'courses.update',
+    'courses.destroy',
+    'courses.tasks.index',
+    'courses.video.store',
+    'courses.video.delete',
 
-            // Books
-            'books.index',
-            'books.store',
-            'books.show',
-            'books.update',
-            'books.destroy',
+    // Course Enrollment
+    'courses.enrollment.store',
+    'courses.enrollment.delete',
+    'users.courses.index',
+    'users.courses.update_status',
+    'enrollments.index',
+    'enrollments.show',
+    'courses.enrollments.index',
+    'users.enrollments.index',
 
-            // Articles
-            'articles.index',
-            'articles.store',
-            'articles.show',
-            'articles.update',
-            'articles.destroy',
+    // Books
+    'books.index',
+    'books.store',
+    'books.show',
+    'books.update',
+    'books.destroy',
 
-            // Countries
-            'countries.index',
+    // Articles
+    'articles.index',
+    'articles.store',
+    'articles.show',
+    'articles.update',
+    'articles.destroy',
 
-            // Optional: Users / Roles / Reports
-            'manage-users',
-            'manage-roles',
-            'view-reports',
-        ];
+    // Tasks
+    'tasks.store',
+    'tasks.show',
+    'tasks.update',
+    'tasks.destroy',
+    'user.tasks.index',
+
+    // Users
+    'users.index',
+
+    // Governorates
+    'governorates.index',
+
+
+];
+
 
         //---------------------------//
         // 2️⃣ Create permissions
@@ -148,8 +157,10 @@ class RolePermissionSeeder extends Seeder
             'ratings.update',
             'ratings.destroy',
 
-            // General
-            'countries.index',
+
+              'user.tasks.index',
+              // Governorates
+    'governorates.index',
         ];
 
         $userRole->syncPermissions($userPermissions);
