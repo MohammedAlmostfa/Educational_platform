@@ -139,7 +139,7 @@ class CourseController extends Controller
      * @param Course $course
      * @return JsonResponse
      */
-    public function AddCourseVidieo(StoreCourseVideoRequest $request, Course $course): JsonResponse
+    public function addCourseVideo(StoreCourseVideoRequest $request, Course $course): JsonResponse
     {
         $validated = $request->validated();
         $result = $this->courseService->AddCourseVidieo($course, $validated);
