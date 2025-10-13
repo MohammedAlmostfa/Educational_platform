@@ -69,8 +69,8 @@ Route::middleware(['auth:api', CheckPermission::class])->group(function () {
     //---------------------------//
     // Course Enrollment
     //---------------------------//
-    Route::post('courses/{courseId}/enroll', [CourseEnrollmentController::class, 'store'])->name('courses.enrollment.store');
-    Route::delete('courses/{courseId}/enroll', [CourseEnrollmentController::class, 'delete'])->name('courses.enrollment.delete');
+    Route::post('courses/{courseId}/enrollment', [CourseEnrollmentController::class, 'store'])->name('courses.enrollment.store');
+    Route::delete('courses/{courseId}/enrollment', [CourseEnrollmentController::class, 'delete'])->name('courses.enrollment.delete');
     Route::get('users/{userId}/courses', [CourseEnrollmentController::class, 'index'])->name('users.courses.index');
     Route::put('users/{userId}/courses/{courseId}/status', [CourseEnrollmentController::class, 'update'])->name('users.courses.update_status');
     Route::get('enrollments', [CourseEnrollmentController::class, 'index'])->name('enrollments.index');
