@@ -43,7 +43,7 @@ class RolePermissionSeeder extends Seeder
 
     // Courses
 
-    'courses.show',
+
     'courses.store',
     'courses.update',
     'courses.destroy',
@@ -137,7 +137,7 @@ class RolePermissionSeeder extends Seeder
             'profiles.me',
 
             // Courses
-            'courses.index',
+
             'courses.enrollment.store',
             'courses.enrollment.delete',
             'users.courses.index',
