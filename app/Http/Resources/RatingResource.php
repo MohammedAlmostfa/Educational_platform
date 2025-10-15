@@ -15,10 +15,10 @@ class RatingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_id' => $this->user_id,
-            'rating' => $this->rating,
-            'comment' => $this->comment,
-            "email"=>$this->user->email,
+            'user_id' => $this->user_id??" ",
+            'rating' => $this->rating??" ",
+            'comment' => $this->comment??" ",
+            "email"=>$this->user->email??" ",
         ];
     }
 }

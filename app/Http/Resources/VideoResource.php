@@ -10,16 +10,17 @@ class VideoResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request): array
     {
         return [
-            'id'          => $this->id,
-            'coutse_id'    => $this->model_id,
-            'path'        => asset('storage/' . $this->path),
-            'mime_type'   => $this->mime_type,
-
+            'id'         => $this->id ?? '',
+            'course_id'  => $this->model_id ?? '',
+            'path'       => $this->path
+                ? asset('storage/' . $this->path)
+                : null,
+            'mime_type'  => $this->mime_type ?? '',
         ];
     }
 }

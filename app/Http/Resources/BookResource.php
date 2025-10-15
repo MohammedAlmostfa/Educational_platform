@@ -14,11 +14,11 @@ class BookResource extends JsonResource
         $firstMedia = $this->media->first();
 
         return [
-            'id'          => $this->id,
-            'name'        => $this->name,
-            'description' => $this->description,
-            'author'      => $this->author,
-            'file'       => $firstMedia ? asset('storage/' . $firstMedia->path) : null,
+            'id'          => $this->id ?? '',
+            'name'        => $this->name?? '',
+            'description' => $this->description ?? '',
+            'author'      => $this->author?? '',
+            'file'       => $firstMedia ? asset('storage/' . $firstMedia->path) : '',
         ];
     }
 }
