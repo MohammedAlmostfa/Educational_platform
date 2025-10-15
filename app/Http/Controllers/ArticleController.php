@@ -3,14 +3,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ArticalRequest\ArticleFilterRequest;
-use App\Http\Requests\ArticalRequest\StoreArticleRequest;
-use App\Http\Requests\ArticalRequest\UpdateArticleRequest;
-use App\Http\Resources\ArticalResource;
 use App\Models\Article;
-use App\Services\ArticleService;
 use Illuminate\Http\Request;
+use App\Services\ArticleService;
 use Illuminate\Support\Facades\Log;
+use App\Http\Resources\ArticalResource;
+use App\Http\Resources\ArticleResource;
+use App\Http\Requests\ArticalRequest\StoreArticleRequest;
+use App\Http\Requests\ArticalRequest\ArticleFilterRequest;
+use App\Http\Requests\ArticalRequest\UpdateArticleRequest;
 
 /**
  * ArticleController
@@ -44,7 +45,7 @@ class ArticleController extends Controller
         $result = $this->articleService->getAllArticles($searchData);
 
         return $result['status'] === 200
-            ? self::success(ArticalResource::collection($result['data']), $result['message'], $result['status'])
+            ? self::success(ArticleResource::collection($result['data']), $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
 
