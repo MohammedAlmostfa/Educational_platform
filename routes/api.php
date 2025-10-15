@@ -23,9 +23,9 @@ Route::post('/register', [AuthController::class, 'register'])->name('auth.regist
 Route::post('/verify-email', [AuthController::class, 'verify'])->name('auth.verify_email');
 Route::post('/resend-code', [AuthController::class, 'resendCode'])->name('auth.resend_code');
 
-Route::post('/change-password', [ForgetPasswordController::class, 'changePassword'])->name('password.change');
-Route::post('/check-email', [ForgetPasswordController::class, 'checkEmail'])->name('password.check_email');
-Route::post('/check-code', [ForgetPasswordController::class, 'checkCode'])->name('password.check_code');
+Route::post('/changePassword', [ForgetPasswordController::class, 'changePassword'])->name('password.change');
+Route::post('/checkEmail', [ForgetPasswordController::class, 'checkEmail'])->name('password.check_email');
+Route::post('/checkCode', [ForgetPasswordController::class, 'checkCode'])->name('password.check_code');
 
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
 
