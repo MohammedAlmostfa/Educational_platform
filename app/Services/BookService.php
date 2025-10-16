@@ -73,6 +73,11 @@ class BookService
 
             // If a new file is provided, replace the old one
             if (!empty($data['file'])) {
+                // Delete all related media
+            $book->media()->delete();
+            $book->deleteMedia($book->media);
+
+
                 $book->storeMediaFile($data['file'], 'books/files', true);
             }
 

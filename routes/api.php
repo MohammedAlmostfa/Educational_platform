@@ -4,15 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckPermission;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\CourseEnrollmentController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
-use App\Http\Middleware\CheckPermission;
 
 //---------------------------//
 // Public Auth Routes
@@ -133,5 +134,20 @@ Route::middleware(['auth:api', CheckPermission::class])->group(function () {
         ]);
     Route::get('user/tasks', [UserController::class, 'getUserTasks'])->name('user.tasks.index');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+
+Route::apiResource('certificates', CertificateController::class)
+
+    ->names([
+        'index'   => 'certificates.index',
+        'store'   => 'certificates.store',
+        'show'    => 'certificates.show',
+        'update'  => 'certificates.update',
+        'destroy' => 'certificates.destroy',
+    ]);
+
+
+
+// Route مخصص للحصول على شهادات المستخدم الحالي
+Route::get('my-certificates', [CertificateController::class, 'myCertificates'])->name('certificates.my');
 
 });

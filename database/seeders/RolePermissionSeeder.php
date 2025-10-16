@@ -87,8 +87,12 @@ class RolePermissionSeeder extends Seeder
 
     // Governorates
     'governorates.index',
-
-
+'certificates.index',
+      'certificates.store',
+     'certificates.show',
+     'certificates.update',
+      'certificates.destroy',
+"certificates.my"
 ];
 
 
@@ -161,6 +165,7 @@ class RolePermissionSeeder extends Seeder
               'user.tasks.index',
               // Governorates
     'governorates.index',
+    "certificates.my"
         ];
 
         $userRole->syncPermissions($userPermissions);

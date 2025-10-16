@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use App\Models\Certificate;
 use App\Traits\HasCustomMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -23,7 +24,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasCustomMedia ,HasRoles;
+    use HasFactory, Notifiable, HasCustomMedia, HasRoles;
 
     /**
      * Guard name for JWT Authentication (typically 'api').
@@ -116,5 +117,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Course::class)
             ->withPivot('status')
             ->withTimestamps();
+    }
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
     }
 }

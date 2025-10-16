@@ -73,6 +73,11 @@ class ArticleService
 
         // Handle optional photo update
         if (!empty($data['photo'])) {
+             // Delete related media files if exist
+        $article->media()->delete();
+     $article->deleteMedia($article->media);
+        // Delete the article record itself
+        $article->delete();
             $article->storeMediaFile($data['photo'], 'articles/photos', true);
         }
 

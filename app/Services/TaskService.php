@@ -46,18 +46,25 @@ class TaskService
      */
     public function updateTask(Task $task, $data)
     {
-        // Update task record
-        $task->update($data);
+        return DB::transaction(function () use ($task, $data) {
+            // Update task record
+            $task->update($data);
 
-        // Replace media file if a new one is provided
-        if (!empty($data['file'])) {
-            $task->storeMediaFile($data['file'], 'Task/files', true);
-        }
+            // Replace media file if a new one is provided
+            if (!empty($data['file'])) {
+                // Delete all related media files from storage
+                $task->deleteMedia($task->media);
 
-        return [
-            'status' => 200,
-            'message' => 'تم تحديث التاسك بنجاح' // Task updated successfully
-        ];
+
+                // Store new media file
+                $task->storeMediaFile($data['file'], 'Task/files', true);
+            }
+
+            return [
+                'status'  => 200,
+                'message' => 'تم تحديث التاسك بنجاح', // Task updated successfully
+            ];
+        });
     }
 
     /**
