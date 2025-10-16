@@ -28,7 +28,21 @@ class DatabaseSeeder extends Seeder
         ]);
         $user->assignRole('admin');
 
+ $user2= User::factory()->create([
+            'name' => 'user',
+            'email' => "mohammedalmostfa36@gmail.com",
+            'password' => bcrypt('mohammedalmostfa36@gmail.com')
+        ]);
+        $user2->assignRole('user');
 
+         Profile::create([
+            'user_id'       => $user2->id,
+            'birthday'      => '1990-01-01',
+            'phone'         => '1234567890',
+            'address'       => '123 Main Street, City',
+            'governorate_id'=> Governorate::first()?->id ?? 1, // أول محافظة موجودة أو افتراضية
+
+        ]);
         Profile::create([
             'user_id'       => $user->id,
             'birthday'      => '1990-01-01',

@@ -32,22 +32,32 @@ class AuthService
     public function register($data)
     {
         $userDataKey = 'user_data_' . $data['email'];
+        $verifkey = 'verification_code_' . $data['email'];
 
         if (Cache::has($userDataKey)) {
             return $this->respond('هذا البريد مستخدم مسبقاً.', 400);
         }
 
-        Cache::put($userDataKey, $data, 3600);
 
-        $verifkey = 'verification_code_' . $data['email'];
+        Cache::put($userDataKey, $data, 3600);
 
         if (Cache::has($verifkey)) {
             return $this->respond('تم إرسال كود التحقق مسبقاً.', 400);
         }
 
+        // خزّن الكود
         $code = Cache::remember($verifkey, 3600, fn() => random_int(1000, 9999));
 
-        event(new Registered($data, $verifkey));
+        try {
+            // جرب إرسال الإيميل
+            event(new Registered($data, $verifkey));
+        } catch (\Exception $e) {
+            // إذا فشل الإرسال، احذف الـ Cache
+            Cache::forget($userDataKey);
+            Cache::forget($verifkey);
+
+            return $this->respond('حدث خطأ أثناء إرسال كود التحقق. حاول مرة أخرى.', 500);
+        }
 
         return $this->respond('تم إرسال كود التحقق بنجاح.', 201, ['email' => $data['email']]);
     }
@@ -68,19 +78,21 @@ class AuthService
         $cachedCode = Cache::get($verifkey);
 
         if ((string)$cachedCode === (string)$data['code']) {
-            if(User::where('email', $userData['email'])->exists()) {
+            if (User::where('email', $userData['email'])->exists()) {
                 return $this->respond('هذا البريد مستخدم مسبقاً.', 400);
             }
 
             $user = null;
-
-            DB::transaction(function() use ($userData, &$user) {
+            DB::transaction(function () use ($userData, &$user) {
                 $user = User::create([
                     'email' => $userData['email'],
                     'password' => bcrypt($userData['password']),
                     'email_verified_at' => now(),
                 ]);
+
+                $user->assignRole('user');
             });
+
 
             $token = JWTAuth::fromUser($user);
 
