@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\CertificateRequest;
 
+use App\Rules\CheckFile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCertificateRequest extends FormRequest
@@ -26,7 +27,13 @@ class UpdateCertificateRequest extends FormRequest
             'certificate_number' => 'nullable|integer|unique:certificates,certificate_number',
             'course_id'   => 'sometimes|nullable|exists:courses,id',
             'date'        => 'sometimes|nullable|date',
-            'file'        => 'sometimes|nullable|file|mimes:pdf,jpg,png|max:2048',
+            'file'        => [
+                'sometimes',
+                'file',
+                'mimes:pdf,doc,docx', // Only allow specific document types
+                'max:20480',           // Maximum 20 MB
+                new CheckFile,         // Custom validation rule
+            ],
         ];
     }
 }
