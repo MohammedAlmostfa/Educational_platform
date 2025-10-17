@@ -138,6 +138,7 @@ class RolePermissionSeeder extends Seeder
             'profilesShow',
             'profilesUpdate',
             'profilesMe',
+               'profilesStore',
 
             // Courses
             'coursesEnrollmentStore',
