@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "engine": "v2",
+  "file": "main.dart.js_1.part.js",
+  "sourceRoot": "",
+  "sources": ["../../../lib/features/articles/presentation/view/manager/get_cubit/get_article_cubit.dart","../../../../../../AppData/Local/Pub/Cache/hosted/pub.dev/bloc-9.0.1/lib/src/bloc_base.dart","../../../lib/features/articles/presentation/view/manager/get_cubit/get_article_state.dart","../../../../../../AppData/Local/Pub/Cache/hosted/pub.dev/bloc-9.0.1/lib/src/cubit.dart"],
+  "names": ["ArticlesCubit","BlocBase","ArticlesCubit.fetchArticles","Cubit","","_blocObserver"],
+  "mappings": "A;0DASEA;0BCsD2BC,ICzDvBD,WFGJA,AAAiEA,C;;;;;;;;;;;;;;;;AAG/DE;EADWA,IACXA,kBAOFA,C;GARaA,IACXA;kBADWA,cACXA;;AACEA;AACiBA;WAAMA,oBAANA;;AACjBA;;;;;;AAHFA;AAKEA,cAAmBA;;;;;OANVA;;AACXA,uBADWA,C",
+  "x_org_dartlang_dart2js": {
+    "minified_names": {
+      "global": "",
+      "instance": ""
+    },
+    "frames": "mKAS2CIAGabAAFyCDCI,A,A;ADtDoBDW;"
+  }
+}

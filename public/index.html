@@ -1,52 +1,19 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <base href="/">
-
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="aqaviatec">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <meta name="google-signin-client_id" content="640287297005-14kngatt2qt4c9ujod1lkhsgqtinacrf.apps.googleusercontent.com">
-
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-
-  <title>aqaviawepsit</title>
-  <link rel="manifest" href="manifest.json">
-  
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
-</html> -->
+<!-- 
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <base href="/" />
 
-    <!-- Security & Encoding -->
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
-    <!-- App Information -->
     <meta name="description" content="A new Flutter project." />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="aqaviatec" />
 
-    <!-- Icons -->
     <link rel="apple-touch-icon" href="icons/Icon-192.png" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -58,7 +25,6 @@
       content="640287297005-14kngatt2qt4c9ujod1lkhsgqtinacrf.apps.googleusercontent.com"
     />
 
-    <!-- Manifest -->
     <link rel="manifest" href="manifest.json" />
 
     <title>aqaviatec</title>
@@ -66,5 +32,191 @@
 
   <body>
     <script src="flutter_bootstrap.js" async></script>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base href="/" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="description" content="A new Flutter project." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="aqaviatec" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <meta
+      name="google-signin-client_id"
+      content="640287297005-14kngatt2qt4c9ujod1lkhsgqtinacrf.apps.googleusercontent.com"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <title>aqaviatec</title>
+
+    <!-- Preload للملفات المهمة -->
+    <link rel="preload" href="main.dart.js" as="script" crossorigin="anonymous">
+    <link rel="preload" href="flutter_bootstrap.js" as="script" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+
+    <style>
+      #loading {
+        position: fixed;
+        top: 0; 
+        left: 0;
+        width: 100%; 
+        height: 100%;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+      }
+      .loading-text {
+        color: #333;
+        font-size: 16px;
+      }
+      .cache-status {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #666;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading aqaviatec...</div>
+      <div class="cache-status" id="cache-status">Checking cache...</div>
+    </div>
+
+    <script src="flutter_bootstrap.js" async></script>
+
+    <script>
+      // حالة التطبيق
+      let flutterAppLoaded = false;
+      let isCached = false;
+
+      // تسجيل Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('sw.js')
+            .then(function(registration) {
+              console.log('✅ ServiceWorker registered successfully');
+              document.getElementById('cache-status').textContent = 'Using cache for faster loading...';
+              isCached = true;
+              
+              // تحقق إذا كان التطبيق مخزن مسبقاً
+              checkIfCached();
+            })
+            .catch(function(error) {
+              console.log('❌ ServiceWorker registration failed: ', error);
+              document.getElementById('cache-status').textContent = 'Loading without cache...';
+            });
+        });
+      } else {
+        console.log('❌ ServiceWorker not supported');
+        document.getElementById('cache-status').textContent = 'ServiceWorker not supported';
+      }
+
+      // تحقق إذا كانت الملفات مخزنة مسبقاً
+      function checkIfCached() {
+        caches.match('main.dart.js')
+          .then(function(response) {
+            if (response) {
+              console.log('✅ Main app is cached');
+              document.getElementById('cache-status').textContent = 'Cached version available';
+              // إذا كان مخزن، قلل وقت الانتظار
+              updateLoadingTimeout(true);
+            } else {
+              console.log('📥 Main app not cached, first time load');
+              document.getElementById('cache-status').textContent = 'First time loading...';
+              updateLoadingTimeout(false);
+            }
+          })
+          .catch(() => {
+            updateLoadingTimeout(false);
+          });
+      }
+
+      // تحديث وقت الانتظار بناءً على حالة الكاش
+      function updateLoadingTimeout(isCached) {
+        const timeoutDuration = isCached ? 1500 : 4000;
+        
+        setTimeout(function() {
+          if (!flutterAppLoaded) {
+            console.log('⏰ Fallback timeout reached');
+            hideLoadingScreen();
+          }
+        }, timeoutDuration);
+      }
+
+      // استمع لحدث Flutter
+      window.addEventListener('flutter-first-frame', function() {
+        console.log('🎉 Flutter: First frame rendered');
+        flutterAppLoaded = true;
+        document.getElementById('cache-status').textContent = 'App ready!';
+        hideLoadingScreen();
+      });
+
+      // استمع لأخطاء Flutter
+      window.addEventListener('flutter-error', function(event) {
+        console.error('🚨 Flutter error:', event);
+        document.getElementById('loading-text').textContent = 'Error loading app';
+        document.getElementById('cache-status').textContent = 'Please refresh the page';
+      });
+
+      // إخفاء شاشة التحميل
+      function hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loading');
+        if (loadingScreen) {
+          loadingScreen.style.opacity = '0';
+          loadingScreen.style.transition = 'opacity 0.4s ease';
+          setTimeout(function() {
+            loadingScreen.style.display = 'none';
+            console.log('👋 Loading screen hidden');
+          }, 400);
+        }
+      }
+
+      // تتبع إذا كانت زيارة متكررة
+      if (sessionStorage.getItem('aqaviatec-visited')) {
+        console.log('🔁 Return visit detected');
+        document.getElementById('cache-status').textContent = 'Welcome back! Loading faster...';
+      } else {
+        sessionStorage.setItem('aqaviatec-visited', 'true');
+        console.log('👋 First visit detected');
+      }
+
+      // تحسين أداء التحميل المتكرر
+      if (window.performance) {
+        const nav = performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'reload') {
+          console.log('🔄 Page was reloaded');
+          document.getElementById('cache-status').textContent = 'Reloading with cache...';
+        }
+      }
+    </script>
   </body>
 </html>

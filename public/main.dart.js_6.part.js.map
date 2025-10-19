@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "engine": "v2",
+  "file": "main.dart.js_6.part.js",
+  "sourceRoot": "",
+  "sources": ["../../../lib/features/articles/data/articles_model.dart","org-dartlang-sdk:///dart-sdk/lib/_internal/js_runtime/lib/core_patch.dart","org-dartlang-sdk:///dart-sdk/lib/internal/iterable.dart","../../../lib/features/articles/repo/articles_repo.dart","org-dartlang-sdk:///dart-sdk/lib/_internal/js_runtime/lib/js_string.dart"],
+  "names": ["ArticlesResponse.fromJson","ListIterable.toList","ArticleRepository","ArticleRepository.getArticles","JSString.isNotEmpty","ArticlesResponse.fromJson.<anonymous function>","Article.fromJson","","fromJson","isEmpty","isNotEmpty","of","toList"],
+  "mappings": "A;;GA0CUA,IAGyBA,WADIA,cAE1BA,mBC6TSC,OC5IhBD;AF7KuBA,KAAfA;AACiBA,KAAhBA;AAFXA,OAdFA,YAmBAA,C;;;;;;;oBGxCAE;;0BAAmCA,C;;;;;;;AAGjCC;EADoBA,IACpBA,kBA6BFA,C;GA9BsBA,IACpBA;kBADoBA,cACpBA;;AAC2CA;IC4YzBC,YD1YdD;AAMeA;WAAMA,+BAANA;;AAMyBA,SAAkBA;GAEpCA;AAAxBA;;;;;;;;AAjBFA;;AAsBEA,UAAmBA,cAKnBA;;;;;cA5BkBA;;AACpBA,uBADoBA,C;;;EH8BXE,IA1BQA,KAAXA;AA0BoBA,OAtC5BC,SAayBD,KAAdA,gBACkBA,KAAhBA,kBACcA,KAAfA,iBAC0BA,KAArBA,uBACQA,KAAdA,gBAqB8CA,C",
+  "x_org_dartlang_dart2js": {
+    "minified_names": {
+      "global": "",
+      "instance": ""
+    },
+    "frames": "0LA8CSYAEiLHDO,iB;oDF9KKJY;udG9BMGAC6YSDY,A;+XJlXYDkB;OAAAAAA3B3BDS,mH;"
+  }
+}
