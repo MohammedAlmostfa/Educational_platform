@@ -3768,7 +3768,7 @@ var $async$nm=B.o(function(e,f){if(e===1){s.push(f)
 w=t}while(true)switch(w){case 0:t=4
 n=x.N
 w=7
-return B.v(r.a.jJ("resendCode",B.ab(["email",d],n,n)),$async$nm)
+return B.v(r.a.jJ("resend-code",B.ab(["email",d],n,n)),$async$nm)
 case 7:q=f
 p=q.a
 if(J.d(J.aC(p,"status"),"success")){n=J.aC(p,"message")
@@ -13246,5 +13246,5 @@ w($,"bpr","b5C",()=>B.b8o(C.A,D.PF))
 w($,"bph","aVX",()=>B.fY(C.cU))
 w($,"bpi","b5w",()=>B.fY(I.dV))
 w($,"bpj","b5x",()=>B.io(0,0.5,x.dx))})()};
-(a=>{a["ELQ6n1a/K+zL5QrIzrZJXb+7pQg="]=a.current})($__dart_deferred_initializers__);
+(a=>{a["R4UgzJ22yzCfc41J8AMbyM2uIfI="]=a.current})($__dart_deferred_initializers__);
 //# sourceMappingURL=main.dart.js_24.part.js.map
