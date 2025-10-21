@@ -41,9 +41,7 @@ class AuthService
 
         Cache::put($userDataKey, $data, 3600);
 
-        if (Cache::has($verifkey)) {
-            return $this->respond('تم إرسال كود التحقق مسبقاً.', 400);
-        }
+
 
         // خزّن الكود
         $code = Cache::remember($verifkey, 3600, fn() => random_int(1000, 9999));
