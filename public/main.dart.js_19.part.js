@@ -1,22 +1,22 @@
 ((a,b)=>{a[b]=a[b]||{}})(self,"$__dart_deferred_initializers__")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var J,A,B={
-b7K(d){var x=J.hR(d.h(0,"data"),new B.aeu(),y.b),w=A.a2(x,x.$ti.i("at.E"))
+b7L(d){var x=J.hR(d.h(0,"data"),new B.aeu(),y.b),w=A.a2(x,x.$ti.i("at.E"))
 A.b6(d.h(0,"status"))
 A.b6(d.h(0,"message"))
 return new B.aet(w)},
-rM:function rM(d,e,f,g){var _=this
+rN:function rN(d,e,f,g){var _=this
 _.b=d
 _.c=e
 _.d=f
 _.e=g},
 aet:function aet(d){this.c=d},
 aeu:function aeu(){},
-b7I(d){return new B.aes(d)},
+b7J(d){return new B.aes(d)},
 aes:function aes(d){this.a=d}}
 J=c[1]
 A=c[0]
 B=a.updateHolder(c[9],B)
-B.rM.prototype={}
+B.rN.prototype={}
 B.aet.prototype={}
 B.aes.prototype={
 zj(d){return this.a4A(d)},
@@ -28,7 +28,7 @@ if(d.length!==0)J.hP(r,"search",d)
 x=7
 return A.v(s.a.re("books",r),$async$zj)
 case 7:q=f
-p=B.b7K(q.a)
+p=B.b7L(q.a)
 m=p.c
 v=m
 x=1
@@ -49,13 +49,13 @@ break
 case 6:case 1:return A.q(v,w)
 case 2:return A.p(t.at(-1),w)}})
 return A.r($async$zj,w)}}
-var z=a.updateTypes(["rM(@)"])
+var z=a.updateTypes(["rN(@)"])
 B.aeu.prototype={
-$1(d){A.dH(d.h(0,"id"))
-return new B.rM(A.b6(d.h(0,"name")),A.b6(d.h(0,"description")),A.b6(d.h(0,"author")),A.b6(d.h(0,"file")))},
+$1(d){A.dJ(d.h(0,"id"))
+return new B.rN(A.b6(d.h(0,"name")),A.b6(d.h(0,"description")),A.b6(d.h(0,"author")),A.b6(d.h(0,"file")))},
 $S:z+0};(function inheritance(){var x=a.inheritMany,w=a.inherit
-x(A.E,[B.rM,B.aet,B.aes])
+x(A.E,[B.rN,B.aet,B.aes])
 w(B.aeu,A.f1)})()
-var y={b:A.T("rM"),o:A.T("Q<rM>"),g:A.T("k"),m:A.T("@")}};
-(a=>{a["iTn1bOfowiRDss0FjQ9xKoIe/T0="]=a.current})($__dart_deferred_initializers__);
+var y={b:A.T("rN"),o:A.T("Q<rN>"),g:A.T("k"),m:A.T("@")}};
+(a=>{a["8/dMEfXbdTkGMIOjRpTkLGVP+Dw="]=a.current})($__dart_deferred_initializers__);
 //# sourceMappingURL=main.dart.js_19.part.js.map

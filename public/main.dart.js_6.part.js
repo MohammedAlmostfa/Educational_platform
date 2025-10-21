@@ -1,10 +1,10 @@
 ((a,b)=>{a[b]=a[b]||{}})(self,"$__dart_deferred_initializers__")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var J,A,B={
-b7C(d){var x=J.hR(d.h(0,"data"),new B.adT(),y.b),w=A.a2(x,x.$ti.i("at.E"))
+b7D(d){var x=J.hR(d.h(0,"data"),new B.adT(),y.b),w=A.a2(x,x.$ti.i("at.E"))
 A.b6(d.h(0,"status"))
 A.b6(d.h(0,"message"))
 return new B.adS(w)},
-rE:function rE(d,e,f,g,h){var _=this
+rF:function rF(d,e,f,g,h){var _=this
 _.b=d
 _.c=e
 _.d=f
@@ -12,12 +12,12 @@ _.e=g
 _.f=h},
 adS:function adS(d){this.c=d},
 adT:function adT(){},
-b7z(d){return new B.adL(d)},
+b7A(d){return new B.adL(d)},
 adL:function adL(d){this.a=d}}
 J=c[1]
 A=c[0]
 B=a.updateHolder(c[6],B)
-B.rE.prototype={}
+B.rF.prototype={}
 B.adS.prototype={}
 B.adL.prototype={
 zh(d){return this.a4x(d)},
@@ -29,7 +29,7 @@ if(d.length!==0)J.hP(r,"search",d)
 x=7
 return A.v(s.a.re("articles",r),$async$zh)
 case 7:q=f
-p=B.b7C(q.a)
+p=B.b7D(q.a)
 n=p.c
 v=n
 x=1
@@ -49,13 +49,13 @@ break
 case 6:case 1:return A.q(v,w)
 case 2:return A.p(t.at(-1),w)}})
 return A.r($async$zh,w)}}
-var z=a.updateTypes(["rE(@)"])
+var z=a.updateTypes(["rF(@)"])
 B.adT.prototype={
-$1(d){A.dH(d.h(0,"id"))
-return new B.rE(A.b6(d.h(0,"title")),A.b6(d.h(0,"content")),A.b6(d.h(0,"author")),A.b6(d.h(0,"published_at")),A.b6(d.h(0,"photo")))},
+$1(d){A.dJ(d.h(0,"id"))
+return new B.rF(A.b6(d.h(0,"title")),A.b6(d.h(0,"content")),A.b6(d.h(0,"author")),A.b6(d.h(0,"published_at")),A.b6(d.h(0,"photo")))},
 $S:z+0};(function inheritance(){var x=a.inheritMany,w=a.inherit
-x(A.E,[B.rE,B.adS,B.adL])
+x(A.E,[B.rF,B.adS,B.adL])
 w(B.adT,A.f1)})()
-var y={b:A.T("rE"),a:A.T("Q<rE>"),g:A.T("k"),m:A.T("@")}};
-(a=>{a["VaCunv2O1/95mC0xHrI1ApNEOfg="]=a.current})($__dart_deferred_initializers__);
+var y={b:A.T("rF"),a:A.T("Q<rF>"),g:A.T("k"),m:A.T("@")}};
+(a=>{a["8Undm+Dt7Xp8KNjFT4OOauIsc6Q="]=a.current})($__dart_deferred_initializers__);
 //# sourceMappingURL=main.dart.js_6.part.js.map
