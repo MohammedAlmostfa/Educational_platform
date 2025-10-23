@@ -30,7 +30,8 @@ class CourseEnrollmentService
     public function getCourseEnrollments($statusFilter)
     {
         // Load all courses with their associated users
-        $courses = Course::with('users')->get();
+$courses = Course::with(['users', 'users.profile'])->get();
+
 
         $enrollments = [];
         foreach ($courses as $course) {
@@ -45,6 +46,8 @@ class CourseEnrollmentService
                     'user_id'     => $user->id,
                     'user_name'   => $user->name,
                     'email'       => $user->email,
+                    'phone'=> $user->profile->phone ?? null,
+                    'address'     => $user->profile->address ?? null,
                     'course_id'   => $course->id,
                     'course_name' => $course->title,
                     'status'      => $user->pivot->status,
