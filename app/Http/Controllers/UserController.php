@@ -55,4 +55,22 @@ class UserController extends Controller
             ? self::success(CourseResource::collection($result['data']), $result['message'], $result['status'])
             : self::error(null, $result['message'], $result['status']);
     }
+/**
+     * Retrieve the authenticated user's course enrollments.
+     *
+     * Includes pivot data (status, created_at) and average ratings.
+     *
+     * @return JsonResponse
+     *
+     */
+    public function getMyCourseEnrollments(): JsonResponse
+    {
+        // Call service layer to get enrolled courses
+        $result = $this->userService->getMyCourseEnrollments();
+
+        // Return standardized JSON response
+        return $result['status'] === 200
+            ? self::success($result['data'], $result['message'], $result['status'])
+            : self::error(null, $result['message'], $result['status']);
+    }
 }

@@ -48,6 +48,7 @@ class RolePermissionSeeder extends Seeder
             'coursesTasksIndex',
             'coursesVideoStore',
             'coursesVideoDelete',
+            'myCoursesEnrollmentsIndex',
 
             // Course Enrollment
             'coursesEnrollmentStore',
@@ -147,6 +148,7 @@ class RolePermissionSeeder extends Seeder
             'coursesEnrollmentsIndex',
             'usersEnrollmentsIndex',
             'coursesTasksIndex',
+            'myCoursesEnrollmentsIndex',
 
             // Books
             'booksIndex',
