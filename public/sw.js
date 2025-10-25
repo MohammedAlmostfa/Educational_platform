@@ -1,9 +1,9 @@
 // web/sw.js
-// 🛠️ تم زيادة رقم الإصدار لإجبار المتصفحات على تحديث الكاش (مهم جداً!)
-const CACHE_NAME = 'aqaviatec-v1.0.2'; 
+// 🚀 التعديل الهام: زيادة رقم إصدار الكاش (لحل مشكلة الكاش)
+const CACHE_NAME = 'aqaviatec-v1.0.4'; 
 const RUNTIME_CACHE = 'runtime-v1';
 
-// الملفات التي نريد تخزينها بشكل دائم - أضف ملفات Flutter الأساسية والأيقونات المخصصة
+// الملفات التي نريد تخزينها بشكل دائم (مع الأيقونات الضرورية فقط)
 const PRECACHE_URLS = [
     './',
     './index.html',
@@ -13,26 +13,10 @@ const PRECACHE_URLS = [
     './favicon-16x16.png',
     './favicon-96x96.png',
     
-    // 🆕 تم إضافة جميع الأيقونات المخصصة هنا
-    './apple-icon-57x57.png',
-    './apple-icon-60x60.png',
-    './apple-icon-72x72.png',
-    './apple-icon-76x76.png',
-    './apple-icon-114x114.png',
-    './apple-icon-120x120.png',
-    './apple-icon-144x144.png',
-    './apple-icon-152x152.png',
+    // ✅ الأيقونات المتبقية فقط
     './apple-icon-180x180.png',
-    './apple-icon-192x192.png',
-    './android-icon-36x36.png',
-    './android-icon-48x48.png',
-    './android-icon-72x72.png',
-    './android-icon-96x96.png',
-    './android-icon-144x144.png',
     './android-icon-192x192.png',
-    './apple-icon-512x512.png',
-    './Icon-maskable-192.png',
-    './Icon-maskable-512.png',
+    './ms-icon-144x144.png',
 
     // ملفات Flutter الأساسية 
     './flutter_bootstrap.js',
@@ -48,13 +32,11 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME)
             .then(cache => {
                 console.log('📦 Service Worker: Caching App Shell');
-                // أضف الملفات الأساسية فقط، الباقي سيتم تخزينه تلقائياً
                 return cache.addAll(PRECACHE_URLS)
                     .then(() => {
                         console.log('✅ All files cached successfully');
                     })
                     .catch(error => {
-                        // لا تعتبر فشلاً كاملاً إذا لم يتم العثور على أيقونات مفقودة
                         console.log('❌ Cache failed for some files:', error);
                     });
             })
@@ -68,7 +50,7 @@ self.addEventListener('activate', event => {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cache => {
-                    // فقط احذف الكاش الذي لا يطابق الاسم الجديد (v1.0.2)
+                    // فقط احذف الكاش الذي لا يطابق الاسم الجديد
                     if (cache !== CACHE_NAME && cache !== RUNTIME_CACHE) {
                         console.log('🗑️ Service Worker: Clearing Old Cache', cache);
                         return caches.delete(cache);
