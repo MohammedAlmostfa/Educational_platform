@@ -129,9 +129,11 @@ class AuthService
         if (!$token = auth('api')->attempt($credentials)) {
             return $this->respond('بيانات الدخول غير صحيحة.', 401);
         }
+        $has_profile= auth('api')->user()->profile ? true : false;
 
         return $this->respond('تم تسجيل الدخول بنجاح.', 201, [
             'token' => $token,
+            'has_profile' => $has_profile,
             'type' => 'bearer',
         ]);
     }
